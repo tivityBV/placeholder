@@ -68,7 +68,7 @@ Het slot in `middleware.js` bestaat omdat het óók op het gratis plan werkt.
 
 | Bestand | Waarvoor |
 |---|---|
-| `index.html` | de hele site: vormgeving, werking en alle 439 woorden |
+| `index.html` | de hele site: vormgeving, werking en inhoud in één bestand |
 | `middleware.js` | het wachtwoordslot (draait op Vercel, vóór de pagina) |
 | `package.json` | één pakket, `@vercel/edge`, nodig voor het slot |
 | `vercel.json` | headers die zoekmachines weghouden |
