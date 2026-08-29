@@ -85,7 +85,8 @@ te laten zien.
   duidelijk gemarkeerde plaatshouder.
 - **Dagelijks spel** en **Uit deel 1** putten uit het verschenen eerste
   boek (Balans, 2024): 120 losse zinsfragmenten voor het spel en acht
-  volledige stukken als proeverij. Het manuscript van deel één zit dus
+  volledige stukken als proeverij. Alleen uit het deel *Verdwijnende en
+  Verdwenen Woorden* — de bijvangst-sectie is er bewust uitgevist. Het manuscript van deel één zit dus
   niet meer integraal in dit bestand — wel nog in de git-geschiedenis van
   deze repo, wat een extra reden is om hem op privé te zetten.
 
