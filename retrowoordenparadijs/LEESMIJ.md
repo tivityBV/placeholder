@@ -76,13 +76,17 @@ Het slot in `middleware.js` bestaat omdat het óók op het gratis plan werkt.
 
 ## De inhoud
 
-439 lemma's, rechtstreeks uit het manuscript: 288 in deel 1 (verdwijnende
-en verdwenen woorden), 151 in deel 2 (de bijvangst). Rogiers teksten staan
-er ongewijzigd in.
+Dit is een promotiedemo voor **deel twee** van *Van Allegaartje tot
+Zeebenen*, dat in de maak is — in eerste instantie om uitgevers het plan
+te laten zien.
 
-Wat er **niet** in staat, omdat het manuscript het niet kent: losse
-betekenissen, woordsoorten en filmmotieven. Die zijn niet verzonnen.
-De slijtage die de letters aanvreet is een vormgevingseffect en geen
-meting; er wordt nergens een percentage getoond.
+- **Woordenbank**: de kandidaten voor deel twee. Twee woorden (kwispedoor
+  en schuinsmarcheerder) hebben al een echte tekst van Rogier; de rest is
+  duidelijk gemarkeerde plaatshouder.
+- **Dagelijks spel** en **Uit deel 1** putten uit het verschenen eerste
+  boek (Balans, 2024): 120 losse zinsfragmenten voor het spel en acht
+  volledige stukken als proeverij. Het manuscript van deel één zit dus
+  niet meer integraal in dit bestand — wel nog in de git-geschiedenis van
+  deze repo, wat een extra reden is om hem op privé te zetten.
 
-Tekst © Rogier Proper / Uitgeverij Balans, 2024.
+Tekst © Rogier Proper / Uitgeverij Balans.
