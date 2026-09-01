@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>'tivity · A new agency model</title>
+<title>'tivity · A new studio model</title>
 <link rel="icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,19 +25,19 @@
   }
   @keyframes sweep { 0% { transform: translateX(-16%); } 100% { transform: translateX(16%); } }
 
-  .wrap { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
+  .wrap { position: relative; z-index: 1; min-height: 88vh; display: flex; flex-direction: column; }
   .top { display: flex; justify-content: space-between; align-items: center; padding: 38px 48px; }
   .top img { height: 34px; }
   .loc { font-size: 11px; letter-spacing: 0.22em; color: rgba(23,21,15,0.4); }
 
   .main {
     flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-    text-align: center; padding: 20px 28px;
+    text-align: center; padding: 20px 28px 10px;
   }
   h1 {
     margin: 0 0 34px; font-weight: 500;
     font-size: clamp(26px, 3.7vw, 48px); line-height: 1.34; letter-spacing: -0.01em;
-    max-width: 14ch;
+    max-width: 20ch;
     animation: rise 1.3s cubic-bezier(.16,.84,.28,1) both;
   }
   h1 em { font-style: normal; color: inherit; }
@@ -80,8 +80,49 @@
   }
   .cta:hover { background: #3A362E; transform: translateY(-1px); }
   .mail { display: block; margin-top: 20px; font-size: 13px; color: rgba(23,21,15,0.4); animation: rise 1.3s ease-out 0.7s both; }
-  .foot { text-align: center; padding: 0 20px 30px; font-size: 12px; color: rgba(23,21,15,0.35); }
-  @media (max-width: 640px) { .top { padding: 26px 26px; } }
+  .foot { text-align: center; padding: 0 20px 56px; font-size: 12px; color: rgba(23,21,15,0.35); }
+
+  /* subtiele scroll-hint onderaan de hero */
+  .scroll-hint {
+    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+    font-size: 11px; letter-spacing: 0.18em; color: rgba(23,21,15,0.3);
+    text-decoration: none; text-align: center;
+    animation: rise 1.3s ease-out 1s both;
+  }
+  .scroll-hint span { display: block; font-size: 15px; margin-top: 6px; animation: nudge 2.4s ease-in-out infinite; }
+  @keyframes nudge { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+
+  /* zakelijke sectie onder de hero */
+  .info {
+    position: relative; z-index: 1;
+    border-top: 1px solid rgba(23,21,15,0.08);
+    padding: 50px 28px 80px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .info-inner { width: 100%; max-width: 760px; }
+  .info-label {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(23,21,15,0.4); margin: 0 0 28px;
+  }
+  .product {
+    display: block; text-decoration: none; color: inherit;
+    border: 1px solid rgba(23,21,15,0.12); border-radius: 14px;
+    padding: 28px 30px; margin-bottom: 64px;
+    transition: border-color .25s, transform .25s, background .25s;
+    background: rgba(255,255,255,0.35);
+  }
+  .product:hover { border-color: rgba(23,21,15,0.3); transform: translateY(-2px); background: rgba(255,255,255,0.6); }
+  .product h3 { margin: 0 0 8px; font-size: 22px; font-weight: 500; }
+  .product p { margin: 0 0 14px; font-size: 15px; line-height: 1.7; color: rgba(23,21,15,0.6); }
+  .product .visit { font-size: 14px; font-weight: 500; color: #17150F; }
+  .product .visit::after { content: " →"; }
+
+  .company {
+    font-size: 13px; line-height: 1.9; color: rgba(23,21,15,0.55);
+  }
+  .company strong { font-weight: 600; color: rgba(23,21,15,0.75); }
+  .company .legal { margin-top: 14px; font-size: 12px; color: rgba(23,21,15,0.4); }
+  @media (max-width: 640px) { .top { padding: 26px 26px; } .wrap { min-height: 80vh; } .info { padding-top: 34px; } }
 </style>
 </head>
 <body>
@@ -92,20 +133,36 @@
     <span class="loc">keizersgracht 720</span>
   </div>
   <div class="main">
-    <h1>big agency output<br>no agency <em>overhead</em></h1>
+    <h1>big studio output<br>no studio <em>overhead</em></h1>
     <span class="formula" role="img" aria-label="simplifai · big idea · amplifai">
       <img class="p1" src="sa_part1.png" alt="">
       <img class="p2" src="sa_part2.png" alt="">
       <img class="p3" src="sa_part3.png" alt="">
     </span>
-    <p class="sub">a new agency model is taking shape in amsterdam<br>first look on request</p>
     <div>
       <a href="#" id="cta" class="cta">let's talk&nbsp; →</a>
       <span class="mail" id="mail"></span>
     </div>
   </div>
-  <div class="foot">© 2026 'tivity · amsterdam</div>
 </div>
+
+<section class="info" id="info">
+  <div class="info-inner">
+    <p class="info-label">producten</p>
+    <a class="product" href="https://monaoffline.com">
+      <h3>Mona Offline</h3>
+      <p>Een Android-app die je helpt om bewust offline te gaan. Je belt in voor een sessie, kiest zelf welke apps bereikbaar blijven, en de rest gaat even op slot. De frictie is het punt: even niet alles binnen handbereik.</p>
+      <span class="visit">monaoffline.com</span>
+    </a>
+    <div class="company">
+      <strong>tivity B.V.</strong><br>
+      Keizersgracht 720 HV<br>
+      1017 EW Amsterdam, Nederland<br>
+      <a href="mailto:hello@tivity.nl" style="color:inherit;">hello@tivity.nl</a>
+      <div class="legal">KvK 84898569</div>
+    </div>
+  </div>
+</section>
 <script>
 (function(){var u='hello',d='tivity.nl',a=u+'@'+d;
 document.getElementById('mail').textContent=a;
