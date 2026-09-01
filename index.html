@@ -134,14 +134,18 @@
     transition: border-color .2s;
   }
   .product .visit-mail:hover { border-color: rgba(23,21,15,0.6); }
-  .product-logo {
-    margin-top: 26px; padding-top: 22px;
-    border-top: 1px solid rgba(23,21,15,0.1);
-    display: block; align-self: flex-start; flex-shrink: 0;
-    width: auto; max-width: 100%; opacity: 0.85;
+  /* app-kader onderin de kaart, gecentreerd */
+  .logo-frame {
+    margin: 26px auto 0;
+    width: 88px; height: 88px;
+    border: 1px solid rgba(23,21,15,0.5);
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
   }
-  .logo-mona { width: 58px; height: auto; }
-  .logo-simplifai { width: 90px; height: auto; }
+  .logo-frame img { display: block; opacity: 0.9; }
+  .logo-mona { width: 52px; height: auto; }
+  .logo-simplifai { width: 76px; height: auto; }
   @media (max-width: 640px) {
     .product-grid { grid-template-columns: 1fr; }
   }
@@ -163,11 +167,6 @@
   </div>
   <div class="main">
     <h1>big studio output<br>no studio <em>overhead</em></h1>
-    <span class="formula" role="img" aria-label="simplifai · big idea · amplifai">
-      <img class="p1" src="sa_part1.png" alt="">
-      <img class="p2" src="sa_part2.png" alt="">
-      <img class="p3" src="sa_part3.png" alt="">
-    </span>
     <div>
       <a href="mailto:hello@tivity.nl" class="cta">let's talk&nbsp; →</a>
       <span class="mail">hello@tivity.nl</span>
@@ -184,13 +183,13 @@
       <h3>Mona Offline</h3>
       <p>Een Android-app die je helpt om bewust offline te gaan. Je belt in voor een sessie, kiest zelf welke apps bereikbaar blijven, en de rest gaat even op slot. De frictie is het punt: even niet alles binnen handbereik.</p>
       <span class="visit">monaoffline.com</span>
-      <img class="product-logo logo-mona" src="logo-mona.png" alt="MONA">
+      <div class="logo-frame"><img class="logo-mona" src="logo-mona.png" alt="MONA"></div>
     </a>
     <div class="product product-static">
       <h3>SimplifAI</h3>
       <p>Een strategische pijplijn die een echte briefing door een gesimuleerd bureauproces haalt en één onderbouwde richting oplevert. Inclusief de routes die het afwees, en waarom. Het maken is goedkoop geworden; de winst zit in het kiezen.</p>
       <a class="visit-mail" href="mailto:hello@tivity.nl?subject=SimplifAI">hello@tivity.nl</a>
-      <img class="product-logo logo-simplifai" src="logo-simplifai.png" alt="SimplifAI">
+      <div class="logo-frame"><img class="logo-simplifai" src="logo-simplifai.png" alt="SimplifAI"></div>
     </div>
     </div>
     <div class="company">
