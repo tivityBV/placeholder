@@ -1,0 +1,1498 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Het Retrowoordenparadijs</title>
+<meta name="description" content="Woorden die bijna weg zijn, en korte films die het verdwijnen zelf in beeld brengen. Bij het tweede deel van Van Allegaartje tot Zeebenen van Rogier Proper.">
+<style>
+/* =========================================================
+   HET RETROWOORDENPARADIJS  ·  demo
+   Tokensysteem: drukvel. Papier, zes inkten, slijtende letters.
+   ========================================================= */
+
+:root{
+  /* kleur */
+  --papier:#E7EAE1;
+  --nachtinkt:#141B3D;
+  --risoroze:#E8336D;
+  --drukblauw:#1240D9;
+  --okergeel:#F0A202;
+  --stofgrijs:#8A9187;
+  --vel:#F3F5EF;
+
+  /* typografie */
+  --display:ui-sans-serif,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --brood:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
+  --meta:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+
+  /* maat */
+  --marge:clamp(1.15rem,4vw,3rem);
+  --rand:2px;
+  --duw:6px;
+}
+
+/* geregistreerde eigenschappen: slijtage kan hierdoor vloeiend lopen */
+@property --s{syntax:'<number>';inherits:true;initial-value:0}
+@property --w{syntax:'<number>';inherits:true;initial-value:0}
+@property --t{syntax:'<number>';inherits:true;initial-value:1}
+@property --adem{syntax:'<number>';inherits:true;initial-value:0}
+
+*,*::before,*::after{box-sizing:border-box}
+
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:130px}
+
+body{
+  margin:0;
+  background:var(--papier);
+  color:var(--nachtinkt);
+  font-family:var(--brood);
+  font-size:1.0625rem;
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* drukkorrel over het hele vel */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:60;
+  opacity:.20;
+  mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+img,svg{max-width:100%}
+
+/* ---------- basistypografie ---------- */
+h1,h2,h3,h4{font-family:var(--display);font-weight:800;letter-spacing:-.035em;line-height:.98;margin:0 0 .5em}
+h1{font-size:clamp(2.3rem,9vw,4.6rem)}
+h2{font-size:clamp(1.6rem,5.2vw,2.7rem)}
+h3{font-size:clamp(1.15rem,3.4vw,1.5rem);letter-spacing:-.02em}
+p{margin:0 0 1em}
+a{color:var(--drukblauw);text-underline-offset:3px;text-decoration-thickness:2px}
+a:hover{color:var(--nachtinkt)}
+.lood{max-width:36em}
+.groot{font-size:1.15rem;line-height:1.6}
+
+.etiket{
+  font-family:var(--meta);
+  font-size:.72rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--nachtinkt);
+  opacity:.72;
+  margin:0 0 .9rem;
+  display:block;
+}
+
+/* ---------- focus en toetsenbord ---------- */
+:focus{outline:none}
+:focus-visible{
+  outline:3px solid var(--drukblauw);
+  outline-offset:3px;
+  border-radius:1px;
+}
+.overslaan{
+  position:absolute;left:-9999px;top:0;z-index:99;
+  background:var(--nachtinkt);color:var(--papier);
+  padding:14px 20px;font-family:var(--display);font-weight:700;
+}
+.overslaan:focus{left:0}
+
+/* ---------- vel en raster ---------- */
+.vel{
+  width:100%;
+  max-width:1180px;
+  margin:0 auto;
+  padding-left:var(--marge);
+  padding-right:var(--marge);
+}
+
+/* ---------- kop ---------- */
+.registratie{
+  display:flex;
+  align-items:stretch;
+  height:10px;
+}
+.registratie span{flex:1}
+.registratie span:nth-child(1){background:var(--nachtinkt)}
+.registratie span:nth-child(2){background:var(--risoroze)}
+.registratie span:nth-child(3){background:var(--drukblauw)}
+.registratie span:nth-child(4){background:var(--okergeel)}
+
+.kop{
+  position:sticky;top:0;z-index:50;
+  background:var(--papier);
+  border-bottom:var(--rand) solid var(--nachtinkt);
+}
+.kopbinnen{
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+  padding-top:.7rem;
+  padding-bottom:.35rem;
+}
+.merk{
+  font-family:var(--display);
+  font-weight:800;
+  letter-spacing:-.04em;
+  font-size:1.12rem;
+  text-decoration:none;
+  color:var(--nachtinkt);
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  min-height:44px;
+}
+.merk b{background:var(--okergeel);padding:.1em .35em;border:var(--rand) solid var(--nachtinkt)}
+.navrol{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.navrol::-webkit-scrollbar{display:none}
+.nav{display:flex;gap:.4rem;list-style:none;margin:0;padding:0 0 .4rem}
+.nav a{
+  display:inline-flex;align-items:center;
+  min-height:44px;padding:0 .85rem;
+  font-family:var(--display);font-weight:700;font-size:.94rem;
+  letter-spacing:-.01em;
+  color:var(--nachtinkt);
+  text-decoration:none;
+  border:var(--rand) solid transparent;
+  white-space:nowrap;
+}
+.nav a:hover{border-color:var(--nachtinkt)}
+.nav a[aria-current="page"]{background:var(--nachtinkt);color:var(--papier)}
+
+@media (min-width:768px){
+  .kopbinnen{flex-direction:row;align-items:center;justify-content:space-between;padding-bottom:.7rem}
+  .nav{padding-bottom:0}
+  .merk{font-size:1.25rem}
+}
+
+/* ---------- knoppen ---------- */
+.knop{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  min-height:46px;min-width:46px;
+  padding:.6rem 1.15rem;
+  font-family:var(--display);font-weight:700;font-size:1rem;letter-spacing:-.01em;
+  color:var(--nachtinkt);
+  background:var(--vel);
+  border:var(--rand) solid var(--nachtinkt);
+  box-shadow:var(--duw) var(--duw) 0 var(--nachtinkt);
+  cursor:pointer;
+  text-decoration:none;
+  transition:transform .12s ease,box-shadow .12s ease,background .12s ease;
+}
+.knop:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--nachtinkt);color:var(--nachtinkt)}
+.knop:active{transform:translate(var(--duw),var(--duw));box-shadow:0 0 0 var(--nachtinkt)}
+.knop--zwaar{background:var(--nachtinkt);color:var(--papier)}
+.knop--zwaar:hover{color:var(--papier)}
+.knop--blauw{background:var(--drukblauw);color:#fff}
+.knop--blauw:hover{color:#fff}
+.knop--geel{background:var(--okergeel)}
+.knop--klein{font-size:.9rem;padding:.45rem .8rem;box-shadow:4px 4px 0 var(--nachtinkt)}
+.knop[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none}
+
+/* ---------- de slijtende inkt (signatuur) ----------
+   Elk woord krijgt een eigen slijtage (--w). De Inktmeter zet --t.
+   De letters worden opgegeten door een raster van gaatjes.        */
+.slijt{
+  --s:clamp(0,calc(var(--w) * var(--t) + var(--adem)),1);
+  --gat:calc(var(--s) * .19em);
+  display:inline-block;
+  opacity:calc(1 - var(--s) * .45);
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,transparent 0 var(--gat),#000 calc(var(--gat) + .085em));
+  mask-image:radial-gradient(circle at 50% 50%,transparent 0 var(--gat),#000 calc(var(--gat) + .085em));
+  -webkit-mask-size:.50em .44em;
+  mask-size:.50em .44em;
+  -webkit-mask-repeat:repeat;
+  mask-repeat:repeat;
+  transition:--s .45s ease,opacity .45s ease;
+}
+.slijt--grof{-webkit-mask-size:.78em .68em;mask-size:.78em .68em;--gat:calc(var(--s) * .30em);
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,transparent 0 var(--gat),#000 calc(var(--gat) + .13em));
+  mask-image:radial-gradient(circle at 50% 50%,transparent 0 var(--gat),#000 calc(var(--gat) + .13em));}
+.slijt--fijn{-webkit-mask-size:.34em .30em;mask-size:.34em .30em;--gat:calc(var(--s) * .13em);
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,transparent 0 var(--gat),#000 calc(var(--gat) + .055em));
+  mask-image:radial-gradient(circle at 50% 50%,transparent 0 var(--gat),#000 calc(var(--gat) + .055em));}
+
+/* wie een woord aankijkt, houdt het even in leven */
+a.muurwoord:hover .slijt,
+a.muurwoord:focus-visible .slijt,
+.kaart:hover .slijt,
+.kaart:focus-within .slijt{--t:0;--adem:0}
+
+/* ---------- voorpagina ---------- */
+.hero{padding-top:clamp(2rem,7vw,4.5rem);padding-bottom:clamp(1.5rem,4vw,2.5rem)}
+.hero h1{
+  font-size:clamp(3rem,15vw,7rem);
+  line-height:.84;
+  letter-spacing:-.05em;
+  margin-bottom:.3em;
+}
+.hero h1 .regel{display:block}
+.hero h1 .klein{
+  display:block;
+  font-size:.26em;
+  letter-spacing:.04em;
+  line-height:1;
+  margin-bottom:.35em;
+}
+.hero h1 .roze{color:var(--risoroze)}
+.hero .tagline{
+  font-size:clamp(1.15rem,3.6vw,1.6rem);
+  line-height:1.35;
+  max-width:24ch;
+  margin-bottom:1.6rem;
+}
+.hero .tagline b{font-weight:400;background:var(--okergeel);box-shadow:0 0 0 4px var(--okergeel)}
+
+@media (min-width:1000px){
+  .hero{display:grid;grid-template-columns:1.35fr 1fr;gap:var(--marge);align-items:end}
+  .hero .tagline{max-width:28ch;margin-bottom:.4rem}
+}
+
+/* de woordenmuur */
+.muurblok{
+  border-top:var(--rand) solid var(--nachtinkt);
+  border-bottom:var(--rand) solid var(--nachtinkt);
+  padding-top:clamp(1.2rem,4vw,2.2rem);
+  padding-bottom:clamp(1.2rem,4vw,2.2rem);
+  margin-bottom:clamp(2rem,6vw,3.5rem);
+}
+.muur{
+  --t:1;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:.4em .55em;
+  font-family:var(--display);
+  font-weight:800;
+  letter-spacing:-.04em;
+  line-height:1.02;
+  margin-bottom:1.6rem;
+}
+.muurwoord{
+  color:var(--nachtinkt);
+  text-decoration:none;
+  font-size:clamp(1.6rem,7vw,3.4rem);
+  padding:.3em .12em;
+}
+.muurwoord:nth-child(3n){color:var(--drukblauw)}
+.muurwoord:nth-child(5n){color:var(--risoroze)}
+.muurwoord:nth-child(7n){font-size:clamp(1.45rem,5vw,2.1rem)}
+.muurwoord:nth-child(4n){font-size:clamp(2rem,9vw,4.4rem)}
+.muurwoord:hover,.muurwoord:focus-visible{color:var(--nachtinkt);text-decoration:underline}
+
+/* de Inktmeter */
+.inktmeter{
+  display:grid;
+  gap:.7rem 1.2rem;
+  align-items:center;
+  grid-template-columns:1fr;
+  border-top:2px dashed var(--stofgrijs);
+  padding-top:1.1rem;
+}
+.inktmeter .uitleg{font-family:var(--meta);font-size:.78rem;line-height:1.5;letter-spacing:.02em;margin:0;max-width:44ch}
+.inktmeter .uitleg b{font-weight:400;color:var(--drukblauw)}
+.meterrij{display:flex;align-items:center;gap:.8rem}
+.jaartal{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(1.6rem,5vw,2.4rem);
+  letter-spacing:-.03em;
+  min-width:4.4ch;
+  background:var(--nachtinkt);color:var(--papier);
+  padding:.05em .2em;
+}
+input[type=range].schuif{
+  -webkit-appearance:none;appearance:none;
+  flex:1;height:44px;background:transparent;cursor:pointer;margin:0;
+}
+input[type=range].schuif::-webkit-slider-runnable-track{
+  height:8px;background:var(--stofgrijs);border:var(--rand) solid var(--nachtinkt);
+}
+input[type=range].schuif::-moz-range-track{
+  height:8px;background:var(--stofgrijs);border:var(--rand) solid var(--nachtinkt);
+}
+input[type=range].schuif::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:30px;height:30px;margin-top:-13px;
+  background:var(--risoroze);border:var(--rand) solid var(--nachtinkt);border-radius:50%;
+}
+input[type=range].schuif::-moz-range-thumb{
+  width:30px;height:30px;
+  background:var(--risoroze);border:var(--rand) solid var(--nachtinkt);border-radius:50%;
+}
+@media (min-width:768px){
+  .inktmeter{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr)}
+}
+
+/* ---------- ingangen ---------- */
+.ingangen{
+  display:grid;
+  gap:1.6rem;
+  grid-template-columns:1fr;
+  margin-bottom:clamp(2.5rem,7vw,4.5rem);
+}
+.ingang{
+  display:block;
+  text-decoration:none;
+  color:var(--nachtinkt);
+  background:var(--vel);
+  border:var(--rand) solid var(--nachtinkt);
+  box-shadow:var(--duw) var(--duw) 0 var(--nachtinkt);
+  padding:1.3rem 1.2rem 1.4rem;
+  transition:transform .14s ease,box-shadow .14s ease;
+}
+.ingang:hover,.ingang:focus-visible{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--nachtinkt);color:var(--nachtinkt)}
+.ingang h3{margin-bottom:.35rem}
+.ingang p{margin:0;font-size:.98rem}
+.ingang .nr{
+  font-family:var(--meta);font-size:.75rem;letter-spacing:.18em;
+  display:block;margin-bottom:.7rem;
+}
+.ingang:nth-child(1){box-shadow:var(--duw) var(--duw) 0 var(--risoroze)}
+.ingang:nth-child(2){box-shadow:var(--duw) var(--duw) 0 var(--drukblauw)}
+.ingang:nth-child(3){box-shadow:var(--duw) var(--duw) 0 var(--okergeel)}
+.ingang:nth-child(1):hover{box-shadow:3px 3px 0 var(--risoroze)}
+.ingang:nth-child(2):hover{box-shadow:3px 3px 0 var(--drukblauw)}
+.ingang:nth-child(3):hover{box-shadow:3px 3px 0 var(--okergeel)}
+@media (min-width:768px){.ingangen{grid-template-columns:repeat(3,1fr)}}
+
+/* ---------- paginakop ---------- */
+.paginakop{padding:clamp(1.8rem,6vw,3.4rem) 0 clamp(1.2rem,3vw,2rem)}
+.paginakop p{max-width:44ch;margin:0}
+
+/* ---------- woordenbank ---------- */
+.zoekvak{
+  display:flex;flex-direction:column;gap:.6rem;
+  margin-bottom:1.1rem;
+}
+label.veldnaam{font-family:var(--meta);font-size:.75rem;letter-spacing:.16em;text-transform:uppercase}
+input[type=text],input[type=search],textarea,select{
+  width:100%;
+  font-family:var(--brood);font-size:1.0625rem;
+  color:var(--nachtinkt);
+  background:var(--vel);
+  border:var(--rand) solid var(--nachtinkt);
+  padding:.65rem .8rem;
+  min-height:48px;
+  border-radius:0;
+  -webkit-appearance:none;appearance:none;
+}
+textarea{min-height:110px;line-height:1.5;resize:vertical}
+input::placeholder,textarea::placeholder{color:var(--nachtinkt);opacity:.5}
+
+.alfabet{display:flex;flex-wrap:wrap;gap:.3rem;list-style:none;margin:0 0 1.4rem;padding:0}
+.alfabet button{
+  min-width:44px;min-height:44px;
+  font-family:var(--display);font-weight:700;font-size:.95rem;
+  background:transparent;border:var(--rand) solid var(--nachtinkt);
+  color:var(--nachtinkt);cursor:pointer;
+}
+.alfabet button:hover{background:var(--okergeel)}
+.alfabet button[aria-pressed="true"]{background:var(--nachtinkt);color:var(--papier)}
+.alfabet button[disabled]{opacity:.3;cursor:not-allowed;border-style:dotted}
+.alfabet button[disabled]:hover{background:transparent}
+
+.telling{font-family:var(--meta);font-size:.8rem;margin:0 0 1.2rem}
+
+.kaartrooster{display:grid;gap:1.5rem;grid-template-columns:1fr;margin-bottom:3rem}
+@media (min-width:700px){.kaartrooster{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1080px){.kaartrooster{grid-template-columns:repeat(3,1fr)}}
+
+.kaart{
+  --t:.55;
+  position:relative;
+  display:flex;flex-direction:column;
+  background:var(--vel);
+  border:var(--rand) solid var(--nachtinkt);
+  box-shadow:var(--duw) var(--duw) 0 var(--nachtinkt);
+  padding:1.1rem 1.1rem 1.3rem;
+  transition:transform .14s ease,box-shadow .14s ease;
+}
+.kaart:hover,.kaart:focus-within{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--risoroze)}
+.kaart h3{
+  font-size:clamp(1.4rem,5vw,1.75rem);
+  margin-bottom:.15rem;
+  word-break:break-word;
+}
+.kaart h3 a{color:inherit;text-decoration:none}
+.kaart h3 a::after{content:"";position:absolute;inset:0}
+.kaart .soort{font-family:var(--meta);font-size:.72rem;letter-spacing:.1em;opacity:.7;margin-bottom:.6rem}
+.kaart .betekenis{margin:0 0 .9rem;font-size:1rem}
+.kaart .motief{
+  margin:auto 0 0;
+  border-top:2px dotted var(--stofgrijs);
+  padding-top:.7rem;
+  font-family:var(--meta);
+  font-size:.78rem;
+  line-height:1.5;
+}
+.kaart .motief span{display:block;letter-spacing:.14em;text-transform:uppercase;opacity:.65;margin-bottom:.25rem}
+.slijtbalk{
+  display:flex;align-items:center;gap:.5rem;
+  font-family:var(--meta);font-size:.7rem;letter-spacing:.08em;
+  margin-bottom:.9rem;
+}
+.slijtbalk .baan{flex:1;height:8px;border:var(--rand) solid var(--nachtinkt);background:var(--papier)}
+.slijtbalk .baan i{display:block;height:100%;background:var(--risoroze)}
+
+/* ---------- woordpagina ---------- */
+.woordkop{padding-top:clamp(1.6rem,5vw,3rem)}
+.woordkop .terug{font-family:var(--meta);font-size:.8rem;display:inline-block;margin-bottom:1.4rem}
+.woordtitel{
+  --t:.45;
+  font-size:clamp(2.6rem,14vw,7.5rem);
+  line-height:.85;
+  letter-spacing:-.055em;
+  margin:0 0 .25em;
+  word-break:break-word;
+}
+.woordtitel:hover{--t:0}
+.woordmeta{font-family:var(--meta);font-size:.8rem;letter-spacing:.08em;margin-bottom:1.2rem;opacity:.75}
+.woordbetekenis{font-size:clamp(1.2rem,3.6vw,1.5rem);line-height:1.45;max-width:30ch;margin-bottom:2rem}
+
+.filmvlak{
+  position:relative;
+  aspect-ratio:16/9;
+  background:var(--nachtinkt);
+  border:var(--rand) solid var(--nachtinkt);
+  box-shadow:var(--duw) var(--duw) 0 var(--drukblauw);
+  overflow:hidden;
+  margin-bottom:1rem;
+  display:flex;align-items:center;justify-content:center;
+}
+.filmvlak .blob{position:absolute;border-radius:50%;filter:blur(38px);opacity:.55;mix-blend-mode:screen}
+.filmvlak .blob:nth-child(1){width:32%;aspect-ratio:1;background:var(--risoroze);left:8%;top:12%;animation:drijf1 19s ease-in-out infinite alternate}
+.filmvlak .blob:nth-child(2){width:28%;aspect-ratio:1;background:var(--drukblauw);right:6%;top:26%;animation:drijf2 23s ease-in-out infinite alternate}
+.filmvlak .blob:nth-child(3){width:20%;aspect-ratio:1;background:var(--okergeel);left:38%;bottom:4%;animation:drijf3 27s ease-in-out infinite alternate}
+.filmvlak .vignet{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(20,27,61,0) 18%,rgba(20,27,61,.55) 58%,rgba(20,27,61,.96) 100%)}
+.filmvlak .kader{position:absolute;inset:14px;border:1px dotted rgba(231,234,225,.35);pointer-events:none}
+.filmvlak .tijd{position:absolute;left:20px;bottom:18px;font-family:var(--meta);font-size:.7rem;letter-spacing:.16em;color:var(--papier);opacity:.75}
+.filmvlak .binnen{position:relative;text-align:center;padding:1rem;color:var(--papier)}
+.filmvlak .binnen strong{
+  display:block;font-family:var(--display);font-weight:800;
+  font-size:clamp(1rem,3.4vw,1.5rem);letter-spacing:-.02em;margin-bottom:.4rem;
+}
+.filmvlak .binnen span{font-family:var(--meta);font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;opacity:.85}
+.filmonder{
+  font-family:var(--meta);font-size:.8rem;line-height:1.6;
+  border-left:4px solid var(--risoroze);padding-left:.9rem;margin-bottom:2.4rem;max-width:46ch;
+}
+@keyframes drijf1{from{transform:translate(0,0) scale(1)}to{transform:translate(22%,14%) scale(1.25)}}
+@keyframes drijf2{from{transform:translate(0,0) scale(1.1)}to{transform:translate(-18%,-12%) scale(.85)}}
+@keyframes drijf3{from{transform:translate(0,0)}to{transform:translate(-24%,-18%) scale(1.3)}}
+
+.tekstblok{max-width:34em;margin-bottom:2.6rem}
+.tekstblok .aanhef{
+  font-family:var(--meta);font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;
+  display:inline-block;background:var(--nachtinkt);color:var(--papier);padding:.3em .6em;margin-bottom:1rem;
+}
+.tekstblok .aanhef.plaats{background:repeating-linear-gradient(45deg,var(--okergeel) 0 8px,var(--vel) 8px 16px);color:var(--nachtinkt);border:var(--rand) solid var(--nachtinkt)}
+.rogier{font-size:clamp(1.15rem,3.4vw,1.35rem);line-height:1.6}
+.rogier::first-letter{
+  font-family:var(--display);font-weight:800;font-size:3.1em;line-height:.8;
+  float:left;margin:.06em .12em 0 0;color:var(--risoroze);
+}
+.plaatshouder{
+  border:var(--rand) dashed var(--nachtinkt);
+  background:repeating-linear-gradient(135deg,rgba(240,162,2,.16) 0 12px,transparent 12px 24px);
+  padding:1rem 1.1rem;
+  font-family:var(--meta);font-size:.92rem;line-height:1.65;
+}
+.plaatshouder p:last-child{margin-bottom:0}
+
+.blok{
+  border-top:var(--rand) solid var(--nachtinkt);
+  padding:1.6rem 0 2rem;
+}
+.blok h2{font-size:clamp(1.3rem,4vw,1.9rem)}
+
+/* stemmen */
+.stemknoppen{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.uitslag{font-family:var(--meta);font-size:.85rem;line-height:1.7}
+.staaf{height:26px;border:var(--rand) solid var(--nachtinkt);background:var(--vel);display:flex;margin:.4rem 0 .2rem}
+.staaf i{display:block;height:100%}
+.staaf i.ja{background:var(--drukblauw)}
+.staaf i.nee{background:var(--okergeel)}
+
+/* inzendingen */
+.inzending{
+  border-left:4px solid var(--stofgrijs);
+  padding:.2rem 0 .2rem .9rem;
+  margin-bottom:1.2rem;
+  max-width:38em;
+}
+.inzending p{margin:0 0 .3rem}
+.inzending .wie{font-family:var(--meta);font-size:.75rem;letter-spacing:.08em;opacity:.75}
+
+/* formulieren */
+.formulier{max-width:34em;display:grid;gap:1rem}
+.veld{display:grid;gap:.35rem}
+.hulp{font-family:var(--meta);font-size:.74rem;opacity:.75;margin:0}
+.melding{
+  font-family:var(--meta);font-size:.85rem;
+  border:var(--rand) solid var(--nachtinkt);
+  background:var(--okergeel);
+  padding:.7rem .9rem;
+}
+.melding.stil{background:var(--vel)}
+
+/* ---------- spel ---------- */
+.spelvak{max-width:44em}
+.speldatum{font-family:var(--meta);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.5rem}
+.spelwoord{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(2.4rem,11vw,5.4rem);letter-spacing:-.05em;line-height:.9;
+  margin:0 0 1.4rem;word-break:break-word;
+}
+.keuzes{display:grid;gap:.9rem;margin-bottom:1.6rem;padding:0;list-style:none}
+.keuze{
+  display:flex;gap:.9rem;align-items:flex-start;
+  width:100%;text-align:left;
+  background:var(--vel);
+  border:var(--rand) solid var(--nachtinkt);
+  box-shadow:5px 5px 0 var(--nachtinkt);
+  padding:.9rem 1rem;min-height:56px;
+  font-family:var(--brood);font-size:1.02rem;line-height:1.45;color:var(--nachtinkt);
+  cursor:pointer;
+  transition:transform .12s ease,box-shadow .12s ease;
+}
+.keuze:hover:not([disabled]){transform:translate(3px,3px);box-shadow:2px 2px 0 var(--nachtinkt)}
+.keuze .letter{
+  flex:0 0 auto;width:30px;height:30px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-weight:800;
+  border:var(--rand) solid var(--nachtinkt);
+}
+.keuze[data-uitslag="goed"]{background:var(--drukblauw);color:#fff;box-shadow:5px 5px 0 var(--nachtinkt)}
+.keuze[data-uitslag="goed"] .letter{border-color:#fff}
+.keuze[data-uitslag="mis"]{background:rgba(232,51,109,.28)}
+.keuze[disabled]{cursor:default}
+.spelscore{
+  display:flex;flex-wrap:wrap;gap:.8rem 1.6rem;
+  font-family:var(--meta);font-size:.85rem;
+  border-top:var(--rand) solid var(--nachtinkt);padding-top:1rem;margin-top:.4rem;
+}
+.spelscore b{font-family:var(--display);font-size:1.5rem;display:block;letter-spacing:-.02em}
+.deelvak{margin-top:1.4rem}
+.deelvak textarea{font-family:var(--meta);font-size:.86rem;min-height:88px}
+
+/* ---------- kerkhof ---------- */
+.loketrooster,.overrooster{display:grid;gap:2.4rem;grid-template-columns:1fr}
+@media (min-width:1000px){
+  .loketrooster{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:3.5rem}
+  .overrooster{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:3.5rem}
+}
+.kantlijn{
+  border-top:var(--rand) solid var(--nachtinkt);
+  padding-top:1.1rem;
+}
+.kantlijn h2{font-size:clamp(1.15rem,3vw,1.4rem)}
+.kantlijn dl{margin:0;font-family:var(--meta);font-size:.82rem;line-height:1.6}
+.kantlijn dt{letter-spacing:.14em;text-transform:uppercase;opacity:.7;margin-top:.9rem}
+.kantlijn dd{margin:.1rem 0 0}
+.drukproef{
+  display:none;
+  position:fixed;left:16px;top:50%;transform:translateY(-50%);
+  writing-mode:vertical-rl;
+  font-family:var(--meta);font-size:.68rem;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--nachtinkt);opacity:.45;z-index:40;pointer-events:none;
+}
+@media (min-width:1340px){.drukproef{display:block}}
+.kerkhof{padding-bottom:4rem}
+.kerkhof .paginakop h1{color:var(--nachtinkt);opacity:.8}
+.zerken{list-style:none;margin:0;padding:0;display:grid;gap:2.6rem;max-width:62rem}
+@media (min-width:820px){.zerken{grid-template-columns:repeat(2,1fr);gap:3rem 3.5rem}}
+.zerk{--t:.52;border-top:1px solid var(--stofgrijs);padding-top:1.3rem;transition:--t .6s ease}
+.zerk:hover,.zerk:focus-within{--t:.24}
+.zerk h3{
+  font-size:clamp(1.5rem,5vw,2.2rem);
+  color:var(--nachtinkt);opacity:.78;
+  margin-bottom:.5rem;
+}
+.zerk p{margin:0 0 .5rem;opacity:.78;max-width:34em}
+.zerk .jaar{font-family:var(--meta);font-size:.74rem;letter-spacing:.14em;opacity:.72}
+
+/* ---------- over ---------- */
+.over{padding-bottom:4rem}
+.over p,.over .slot,.over .paginakop{max-width:38em}
+.over .slot{
+  margin-top:2rem;border:var(--rand) solid var(--nachtinkt);
+  background:var(--vel);padding:1.1rem 1.2rem;
+  font-family:var(--meta);font-size:.88rem;line-height:1.6;
+}
+
+/* ---------- voet ---------- */
+.voet{
+  border-top:var(--rand) solid var(--nachtinkt);
+  background:var(--nachtinkt);color:var(--papier);
+  padding:2.2rem 0 2.6rem;
+  margin-top:2rem;
+}
+.voet a{color:var(--papier)}
+.voet .voetrooster{display:grid;gap:1.4rem}
+@media (min-width:768px){.voet .voetrooster{grid-template-columns:1.4fr 1fr}}
+.voet p{margin:0 0 .5rem;font-family:var(--meta);font-size:.82rem;line-height:1.7}
+.voet .titel{font-family:var(--display);font-weight:800;font-size:1.3rem;letter-spacing:-.03em;margin-bottom:.6rem}
+
+.verborgen{
+  position:absolute!important;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;
+}
+
+/* ---------- minder beweging ---------- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.001ms!important;
+  }
+  .filmvlak .blob{filter:blur(30px)}
+}
+
+/* ---------- toevoegingen: spel op fragmenten, proeverij ---------- */
+.fragment{font-size:clamp(1.05rem,3vw,1.22rem);line-height:1.6;max-width:40em;
+  border-left:4px solid var(--risoroze);padding-left:1rem;margin:0 0 1.6rem;font-family:var(--brood)}
+.fragment .gat{display:inline-block;min-width:5ch;background:var(--nachtinkt);color:var(--nachtinkt);
+  border-radius:1px;user-select:none}
+.zerk--vol h3,.zerk--vol p{opacity:1}
+.zerk--vol p{font-size:1rem;line-height:1.6}
+</style>
+</head>
+<body>
+<div lang="nl">
+<a class="overslaan" href="#hoofd">Naar de inhoud</a>
+
+<header class="kop">
+  <div class="registratie" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+  <div class="vel kopbinnen">
+    <a class="merk" href="#/"><b>Het</b> Retrowoordenparadijs</a>
+    <nav class="navrol" aria-label="Hoofdnavigatie">
+      <ul class="nav" id="nav">
+        <li><a href="#/">Voorpagina</a></li>
+        <li><a href="#/woordenbank">Woordenbank</a></li>
+        <li><a href="#/spel">Dagelijks spel</a></li>
+        <li><a href="#/inleverloket">Inleverloket</a></li>
+        <li><a href="#/uitdeel1">Uit deel 1</a></li>
+        <li><a href="#/over">Over</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="hoofd" tabindex="-1"></main>
+
+<footer class="voet">
+  <div class="vel voetrooster">
+    <div>
+      <p class="titel">Het Retrowoordenparadijs</p>
+      <p>Een platform bij het tweede deel van <i>Van Allegaartje tot Zeebenen</i> van Rogier Proper — in de maak. Bij een selectie van de woorden een film van een minuut: een tekening in beweging, met Rogiers stem.</p>
+    </div>
+    <div>
+      <p><a href="#/woordenbank">Woordenbank</a> · <a href="#/spel">Dagelijks spel</a> · <a href="#/inleverloket">Inleverloket</a> · <a href="#/uitdeel1">Uit deel 1</a> · <a href="#/over">Over dit project</a></p>
+      <p>Demo, augustus 2026. Nog geen definitieve inhoud.</p>
+    </div>
+  </div>
+</footer>
+
+<p class="drukproef" aria-hidden="true">Drukproef · demo · augustus 2026</p>
+<div class="verborgen" id="omroep" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================
+   1. INHOUD
+   Twee teksten zijn van Rogier Proper en staan er letterlijk.
+   Alle andere teksten zijn plaatshouders (bron: 'plaatshouder')
+   en zijn bedoeld om vervangen te worden.
+   ========================================================= */
+(function(){
+'use strict';
+
+var WOORDEN = [
+  {
+    id:'kwispedoor', woord:'kwispedoor', soort:'de, zelfstandig naamwoord',
+    betekenis:'Spuwbak van koper of email, vroeger te vinden in cafés, wachtkamers en sociëteiten.',
+    voorbeeld:'Naast elke barkruk stond een kwispedoor, en niemand keek ervan op.',
+    motief:'Een klontje suiker dat oplost in een glas water.',
+    slijtage:0.93, bron:'rogier',
+    tekst:'Wie kent de kwispedoor nog? Ik niet. Wel het woord, maar als uitgestorven voorwerp wordt het hier alleen maar vermeld omdat het naar mijn smaak zo’n mooi woord is. Zeg het maar eens een paar keer met gedragen stem hardop. Kwispe-doooor.'
+  },
+  {
+    id:'schuinsmarcheerder', woord:'schuinsmarcheerder', soort:'de, zelfstandig naamwoord',
+    betekenis:'Iemand die het met de goede zeden niet zo nauw neemt, een losbol met charme.',
+    voorbeeld:'Zijn oom, een schuinsmarcheerder van de oude stempel, kwam altijd te laat en altijd vrolijk.',
+    motief:'Een peloton in de pas, waarvan één schaduw langzaam uit beeld loopt.',
+    slijtage:0.78, bron:'rogier',
+    tekst:'Jammer dat dit woord aan het verdwijnen is. Je ziet het voor je: een peloton strak in de pas marcherende militairen, waar opeens één van hen langzaam, zonder dat iemand er schijnbaar acht op slaat, in een schuine hoek, marcherend, ongemerkt uit de rij begint te lopen, ongetwijfeld op weg naar zijn geheime liefje. Het zou Charlie Chaplin kunnen zijn.'
+  },
+  {
+    id:'aanstelleritis', woord:'aanstelleritis', soort:'de, zelfstandig naamwoord',
+    betekenis:'Overdreven aanstellerij, gebracht alsof het een kwaal is.',
+    voorbeeld:'Het is geen griep, het is aanstelleritis.',
+    motief:'Een ballon die heel langzaam leegloopt en aan het eind nog even piept.',
+    slijtage:0.61, bron:'plaatshouder',
+    tekst:'Deze regels tonen alleen de lengte en het ritme: ongeveer een minuut voorlezen. Een woord dat zich voordoet als een ziekte, compleet met de uitgang van echte kwalen. Wie het uitspreekt heeft de diagnose meestal al gesteld, en de patiënt is zelden aanwezig.'
+  },
+    {
+    id:'talmen', woord:'talmen', soort:'werkwoord',
+    betekenis:'Aarzelen, treuzelen, het moment van beslissen voor je uit schuiven.',
+    voorbeeld:'Hij talmde bij de deur tot de bus allang weg was.',
+    motief:'Een druppel aan een kraan die maar niet valt, en dan toch.',
+    slijtage:0.52, bron:'plaatshouder',
+    tekst:'Deze regels tonen alleen de lengte en het ritme. Talmen is uitstellen met stijl: geen paniek, geen besluit, alleen tijd die verstrijkt terwijl je de kraan blijft aankijken. Het woord talmt zelf ook, want het begint traag en het eindigt nergens.'
+  },
+  {
+    id:'verpieteren', woord:'verpieteren', soort:'werkwoord',
+    betekenis:'Langzaam verwelken of vergaan door verwaarlozing.',
+    voorbeeld:'De hele bak geraniums stond te verpieteren in de zon.',
+    motief:'Een boeket dat in versneld tempo zijn blad loslaat, blaadje voor blaadje.',
+    slijtage:0.58, bron:'plaatshouder',
+    tekst:'Deze regels tonen alleen de lengte en het ritme. Verpieteren doet een plant op de vensterbank, maar ook een plan, een middag, een liefde. Er is geen moment aan te wijzen waarop het misging, en juist dat zit in het woord.'
+  },
+  {
+    id:'likmevessie', woord:'likmevessie', soort:'de, zelfstandig naamwoord',
+    betekenis:'Onzin, flauwekul, iets van niks. Meestal in: van likmevessie.',
+    voorbeeld:'Een diploma van likmevessie, gehaald bij een school van niks.',
+    motief:'Een zeepbel die op de stoep uiteenspat en een nat vlekje achterlaat.',
+    slijtage:0.70, bron:'plaatshouder',
+    tekst:'Deze regels tonen alleen de lengte en het ritme. Van likmevessie is een oordeel dat op de fiets voorbijkomt en niet blijft staan om het uit te leggen. Het is grover dan flauwekul en vrolijker dan onzin, en het klinkt naar een straat waar de ramen openstonden.'
+  },
+  {
+    id:'schoorvoetend', woord:'schoorvoetend', soort:'bijwoord',
+    betekenis:'Met tegenzin, stap voor stap, alsof je voeten remmen.',
+    voorbeeld:'Schoorvoetend gaf hij toe dat de buurman gelijk had.',
+    motief:'Voetsporen in nat zand die door de vloed worden gladgestreken.',
+    slijtage:0.49, bron:'plaatshouder',
+    tekst:'Deze regels tonen alleen de lengte en het ritme. In schoorvoetend zit schoren, stutten, tegenhouden. Het lichaam gaat mee terwijl de rest van de man er nog niet aan toe is, en dat is precies wat je ziet bij iemand die zijn ongelijk komt brengen.'
+  },
+  {
+    id:'hinderplaag', woord:'hinderplaag', soort:'de, zelfstandig naamwoord',
+    betekenis:'Aanhoudende last of ergernis die je niet kwijtraakt.',
+    voorbeeld:'Die kapotte lantaarn is al maanden een hinderplaag voor de hele straat.',
+    motief:'Een mug in een lichtbak, die op het laatst niet meer zoemt.',
+    slijtage:0.81, bron:'plaatshouder',
+    tekst:'Deze regels tonen alleen de lengte en het ritme. Een hinderplaag is te klein voor een ramp en te groot om te negeren, en daar zit het hele woord in. Twee lastige woorden hebben elkaar gevonden en zijn samen erger geworden dan ze apart waren.'
+  },
+  {
+    id:'kachelen', woord:'kachelen', soort:'werkwoord',
+    betekenis:'Hard doorrijden of doorwerken, met vaart en zonder omkijken.',
+    voorbeeld:'Hij kachelde met zeventig over de dijk, jas open, pet achterstevoren.',
+    motief:'Rook uit een schoorsteen die door de wind wordt weggeveegd.',
+    slijtage:0.64, bron:'plaatshouder',
+    tekst:'Deze regels tonen alleen de lengte en het ritme. Kachelen komt uit een tijd waarin snelheid nog naar kolen rook. Het woord heeft haast, het duurt maar drie lettergrepen en het is alweer voorbij.'
+  },
+    {
+    id:'kattebelletje', woord:'kattebelletje', soort:'het, zelfstandig naamwoord',
+    betekenis:'Kort briefje, haastig neergekrabbeld.',
+    voorbeeld:'Op de keukentafel lag een kattebelletje: ben zo terug.',
+    motief:'Handschrift op een beslagen ruit dat langzaam optrekt.',
+    slijtage:0.69, bron:'plaatshouder',
+    tekst:'Deze regels tonen alleen de lengte en het ritme. Een kattebelletje heeft niets met katten te maken en alles met haast. Het is het kleinste bericht dat er bestond voordat berichten gratis werden, en het lag altijd op tafel, nooit in een la.'
+  }
+];
+
+var PROEVERIJ = [{"woord":"Allegaartje","slijtage":0.78,"tekst":["Een allegaartje heeft iets te maken met van alles in een pan kieperen en dan flink roeren tot het gaar is en je van dit samenraapsel een lekkere ratjetoe hebt gemaakt. Maar ik ben geen etymoloog (ofwel woordenontleder), dus het kan ook een andere oorsprong hebben. In elk geval is het mooie woord soepzooitje – of zoals anderen zeggen: soepzootje – een synoniem van allegaartje, al is het wat sterker: ‘In het museum trof men werkelijk een heerlijk allegaartje van stijlen aan, hoewel anderen – de puristen – het eerder een soepzootje zouden noemen.’"]},{"woord":"Ammehoela","slijtage":0.67,"tekst":["Dat ammehoela pas de laatste jaren aan het verdwijnen is, mag een klein wonder heten, want het werd al in het begin van de vorige eeuw gebruikt door de jeugd wanneer men iets wilde zeggen als: bekijk ‘t, ja, dûh, de ballen, ja, me reet! De jeugdigen gaven dan inderdaad daarbij een klap op de eigen kont, volgens de overlevering. Je ziet het voor je. Zeker een eeuw heeft ammehoela het uitgehouden. Ook mijn oudere zus Mischa zei het regelmatig in de jaren vijftig, bijvoorbeeld wanneer ik bij vorst haar wanten wilden lenen. ‘Ja, Ammehoela!’ Jammer van het verlies van dit woord, vooral vanwege die klap op de kont."]},{"woord":"Apegapen","slijtage":0.83,"tekst":["Eigenlijk is apegapen geen zelfstandig opererend woord en functioneert het alleen in de uitdrukking ‘op apegapen liggen’. Dat is tegen de afspraak die ik met mezelf maakte: als we hier ook nog aan mooie of verdwenen uitdrukkingen gaan beginnen, is het einde zoek. En dat moet niet. Maar goed, omdat apegapen zo’n mooi binnenrijm met zich meevoert en zo’n grappig woord lijkt te zijn, zie ik het door de vingers. Zonder uitzondering, geen regel. Het verdwijnende op apegapen liggen betekent ‘bijna op sterven liggen’, ‘naar de laatste adem snakken’. Met een aap heeft het helaas niets te maken, met gapen nauwelijks."]},{"woord":"Bakvis","slijtage":0.5,"tekst":["Dit verdwenen woord werd nog in de jaren vijftig/zestig gebruikt om een meisje in de pubertijd aan te duiden: ‘Ach ja, ze is nog een bakvis, hè.’ Het stamt volgens sommigen uit de visserij: een bakvis was te klein voor de verkoop en te groot om terug in zee te gooien (zonde!). En die kon je dan het beste maar bakken, zo luidt de officiële lezing (onzin, lijkt me). Dus gooide men die vis in een speciale bak, zo stel ik me voor. ‘Vlees noch vis’ zou je de bakvis ook kunnen noemen, al heeft een bakvis weinig met vlees te maken, behalve dat haar pubertijd meestal een zekere verandering van lijf en leden met zich meebrengt. Maar dat heeft nog steeds niets met het woord bakvis te maken."]},{"woord":"Hondekop","slijtage":0.66,"tekst":["Een mens heeft een hoofd en soms koppijn. Eigenlijk is een kop het hoofd van een dier. Alleen een paard heeft officieel een hoofd, de lieve ezel weer niet. Dat is gebeurd, neem ik aan, door de lobby van onze grootgrondbezitters, tevens paardenliefhebbers. Spreekt men onaardig over iemands hoofd, dan wordt het meteen het dierlijke kop. Houd je kop. Wat een domme kop. Of als scheldwoord: ‘Hondekop!’ Maar waarom dan weer wel de onschuldige koptelefoon? Je ziet trouwens dat deze heel sneaky steeds vaker door hoofdtelefoon wordt vervangen.","Hondelul –– Waarom het woord hond zo vaak als scheldwoord wordt of werd gebruikt is me een raadsel. Ja, in sommige culturen is het een onrein beest, wat natuurlijk nergens op slaat. Je hebt lieve honden en nare honden en valse honden, net als bij mensen. Een tijdlang werden voetbalscheidsrechters vanaf de tribunes massaal voor ‘hondelul’ uitgemaakt bij onwelgevallige beslissingen. Ook omdat het woord zo’n prettige cadans heeft. ‘Hi-ha-hondelul-hi-ha-hondelul!’ (Sommigen menen dat je dat dan als het correcte hondenlul moet schrijven, met een n, net als hondenkop, maar ik behoor niet tot die sommigen.)"]},{"woord":"Lijntrekken","slijtage":0.75,"tekst":["Mooi beeldend woord, lijntrekken. Hoewel er bijna niets mooiers is dan een goed getrokken potloodlijn op een blanco tekenvel, zie ik bij lijntrekken toch in de eerste plaats zo’n karretje voor me waarmee op de grasmat van het sportveld witte kalklijnen worden of werden getrokken. Of een ononderbroken witte lijn in het midden van een eindeloze tweebaansweg in een licht glooiend Amerikaans landschap die in de verte in het niets verdwijnt. Waarom lijntrekken ook betekent: ‘de kantjes eraf lopen’, is me een raadsel. Welke kantjes? Op een eindeloze tweebaansweg? Op het sportveld?","Linkmiegel (ook als Linkmichel) – ‘Linkmiegel!’ dat riep de tweede vrouw van mijn vader vaak naar me (trouwens ook naar mijn vader). Ik had geen idee wat het betekende, al begreep ik wel dat ik voor haar niet in de haak was, want ik kende wel al de uitdrukking ‘linke soep’. Het was haar in de mond Bbestorven (zie ook onder de b in deel 2), en mijn vader zei nooit iets terug wanneer hij voor linkmiegel werd uitgemaakt. Ik weet nu dat zij hem niet vertrouwde, en mij dus kennelijk ook niet. Je was dan gewiekst – zo heette dat ook wel. Herinneringen worden vaak aangevuurd door ongrijpbare beelden of associaties."]},{"woord":"Verpatsen","slijtage":0.74,"tekst":["(Zie ook Deel 2, Snuisteren) Terwijl jij even naar snuisteren kijkt, buigen wij ons intussen even over het voorvoegsel ‘ver-’, dat je aan het begin van zo ontstellend veel werkwoorden aantreft. Zoals verpatsen dus. Kijk maar eens in de Dikke Van Dale hoe veel het er zijn. Wat betekent dat ver- nu eigenlijk? Daar zijn natuurlijk vele boeiende theorieën over. Ikzelf denk dat het Nederlandse ‘ver-’ dezelfde functie heeft als het Franse of Duitse voorvoegsel ‘re-’. Het duidt op een extra gevoelswaarde die re-, of ver- dus, aan het betreffende woord geeft: ‘nog eens’, ‘opnieuw’, ‘terug’, ‘meer’. Daarmee versterkt ver- de basisstrekking die we vaak in de stam van het werkwoord al aantreffen, of in het woord waarvan het afgeleid is – om het allemaal wat deftig te zeggen. Slikken - verslikken. Nietig maken - vernietigen. Scheuren - verscheuren. Vormen - vervormen. Blij - verblijden. Breed - verbreden. En zo voort, en zo voort. Dat is dus de reden, denk ik, dat er zo veel woorden zijn met ver- aan het begin. Je kan bijna overal namelijk ver-, eh voorzetten."]},{"woord":"Zakkenwasser","slijtage":0.75,"tekst":["Dit is een mooie verwensing omdat hij zo beeldend is: je ziet het voor je. Interessant om te weten wát je dan voor je ziet. Ik zie eerst een stevige vrouw met opgestroopte mouwen aan een Wwastobbe (zie bij de w) en een wringer, met haar eeltige handen en rode armen wast ze een juten zak. De zak haalt ze door de wringer. Bruin water. Rare associatie van mij, want zakkenwasser zeg je tegen een man, wanneer je hem een lul vindt. De tweede associatie is dan ook een man in een tuinbroek op een houten krukje met een emmertje sop naast zich. Het speelt zich af in een grote tuin met voor hem een onafzienbare rij halfnaakte, wachtende mannen, slechts in een hesje of overhemd gekleed. Een voor een sopt de man met beide handen hun zak met veel aandacht, schuim en lauw water. De mannen kijken strak voor zich uit en reageren niet. Ook hun piem blijft onaangedaan. Vreemd beroep, zakkenwasser. Ik noem hem, zoals gezegd, een lul."]}];
+var FRAGMENTEN = [{"w":"Desolaat","f":"Desolaat drukt voor mij iets uit van een totale leegte of verlatenheid. Ah, daar zullen we het hebben: het associeert met ‘zich compleet verlaten voelen’."},{"w":"Belatafeld","f":"Een variant van het idiote belatafeld was het suffe ‘betoeterd’."},{"w":"Kwajongen","f":"En dat komt omdat de bedoeling van het woord is dat het een negatieve associatie oproept, terwijl volgens mij een kwajongen juist wel een grappig, stout persoon kan zijn."},{"w":"Bofkont","f":"Bovendien is de aanduiding bofkont, voor iemand die geluk heeft, al een tijd uit beeld. Vanwege de twee korte o’s in bofkont vind ik dat woord bij nader inzien toch mooier, bovendien zie ik er de kont bij van deze of gene, en dat is toch echt iets anders dan de bips van deze of gene."},{"w":"Belabberd","f":"Als je je belabberd voelt, voel je je net iets beroerder dan beroerd. Een treffend woord, belabberd, waarvan het onrechtvaardig is (ten aanzien van het woord) dat je het steeds minder hoort, terwijl ik toch zou zeggen dat steeds meer mensen er behoorlijk belabberd aan toe zijn, als je zo om je heen kijkt, en vooral wanneer hen het ongeluk overkomt dat ze naar een vaderlandse talkshow op de tv tv zitten te kijken."},{"w":"Louter","f":"Ik zie louter mensen van laag allooi om ons heen, Roderik, zullen we snel een taxi nemen? ’ Louter wordt of werd gebruikt door de hogere standen, zou je kunnen zeggen, een klassenwoord."},{"w":"Uitpluizen","f":"Ik hoorde het woord een keer in een boekenprogramma op de tv tv uitspreken door een vrouw die vertelde dat ze wel een‘s nieuwsgierig naar iets was en dan ging ze het uitpluizen."},{"w":"Heibel","f":"Heibel is een woord dat je voor vele, ietwat verschillende vormen van rumoer kon gebruiken. ‘Maak niet zo’n heibel!"},{"w":"Firmament","f":"Er is weer een hoop gedoe aan het firmament,’ hoorde ik iemand zeggen achter me in de rij bij de Lidl. Ze sprak met een prachtig zangerig Surinaams accent."},{"w":"Ammehoela","f":"Dat ammehoela pas de laatste jaren aan het verdwijnen is, mag een klein wonder heten, want het werd al in het begin van de vorige eeuw gebruikt door de jeugd wanneer men iets wilde zeggen als: bekijk ‘t, ja, dûh, de ballen, ja, me reet!"},{"w":"Bezetting","f":"Nee, ik heb het over De Bezetting, wat tot voor kort nog een overduidelijke verwijzing was naar de bezetting van Nederland door Hitler-Duitsland in 1940-1945, een begrip dat als zodanig ook lange tijd gekoesterd werd als Het Nationale Trauma van dit land."},{"w":"Zwelgen","f":"Zo zag ik de tekst: ‘Nooit had Rinus geweten hoe het was om zo te zwelgen in een bijzondere en warme vrouw als Dora. En hij was nu toch al 53."},{"w":"Botvieren","f":"Zijn verlangens botvieren ofwel bevredigen, haar wraakgevoelens botvieren ofwel een uitweg geven. Nou, daar zijn we wel klaar mee, met dat botvieren."},{"w":"Nakend","f":"Het zinnetje is dan ook mooier in die andere betekenis van nakend: de Dag des Heren is naakt. Hoe kan je je die dag dan voorstellen?"},{"w":"Hutjemutje","f":"Het bijna verdwenen woord hutjemutje betekent: ‘Met het hele zootje dicht op mekaar’ ofwel in keurig Zaans: met klus en kluis (zie ook deel 2,  het Zaanse Roggebroderig bij de r)."},{"w":"Smeerkees","f":"Nu ja, het komt er gewoon op neer dat Kees lange tijd in de garage werkte en als Smeerkees met pensioen is gestuurd. God, wat flauw."},{"w":"Overrompelend","f":"Een overrompelend tafereeltje, zo op de vroege zondagochtend bij het uitgaan van de kerk. God bloosde ervan, als die al bestaan had."},{"w":"Flapdrol","f":"Maar het verzamelwoord flapdrol wordt nooit letterlijk gebruikt voor een tewaterlating in het toilet. ‘En, ging het?"},{"w":"Benenwagen","f":"Meisjesbenenwagens, blindenbenenwagens, spillebenenwagens, mankebenenwagens. En zo voort."},{"w":"Dwarsbomen","f":"In de plaatselijke courant verscheen het bericht: ‘Houthakkers dwarsbomen snelwegplannen met illegale kap’. En dat was voor het blad Onze Taal weer aanleiding om deze kop op haar achterpagina te plaatsen in de onvolprezen rubriek ‘Ruggespraak’."},{"w":"Klakkeloos","f":"Je doet iets klakkeloos wil zeggen: zonder voorbehoud, zonder direct na te denken. Dus misschien heb je er ooit wel over nagedacht dat je een goede vriend met zijn eega bedriegt (of je vrouw met een goede vriendin van haar), maar je hebt het risico genomen en dat vind je de moeite waard, kennelijk."},{"w":"B-kantje","f":"Het ging erom dat steeds meer achterkanten (b-kantjes) van zogeheten singles van bekende popsongs ontdekt worden als veel betere nummers dan de populaire a-kantjes."},{"w":"Kukelen","f":"Al kom je wel eens een haan tegen die zo schor weet te kraaien dat het wel kukelen lijkt. Ik wel, tenminste."},{"w":"Hunkeren","f":"Het woord hunkeren komt van heel diep – als je het tenminste goed uitspreekt, en dat geeft ook meteen de gevoelswaarde van het woord aan."},{"w":"Strubbelingen","f":"Althans, daar wordt het woord strubbelingen vaak bij geplaatst. Bij strubbelingen slaat men elkaar de koppen niet in."},{"w":"Zwartgallig","f":"Het is dan ook een somber makend woord, zwartgallig, vooral wanneer de bedoelde zwartgallige persoon zich van dit alles bewust raakt, en zijn gal gaat spuwen, zoals een uitdrukking luidt."},{"w":"Spraakwater","f":"Je zou zeggen dat spraakwater het spuug is dat bij een enthousiaste spreker tegelijk met zijn woorden den mond ontvliedt. Of dat het glas op zijn katheder gevuld is met spraakwater."},{"w":"Snuiter","f":"Dan kan je daar de snuiter, het daartoe bestemde schaartje, mee afvegen. ) Dat een jonge, wat vreemde man of gast ook snuiter wordt genoemd – altijd voorafgegaan door ‘vreemde’ of ‘rare’ – heeft daar niets mee van doen."},{"w":"Hotemetoot","f":"Een hotemetoot is iemand die vooral zichzelf behoorlijk belangrijk vindt en daarnaar handelt, maar zichzelf nooit een hotemetoot zal noemen."},{"w":"Hommeles","f":"Niet voor niets had je eind jaren vijftig van de vorige eeuw een zeer populair wekelijks hoorspel op de Nederlandse radio getiteld ‘Pension Hommeles’."},{"w":"Drollenvanger","f":"In de jaren vijftig kwam je ze al bijna niet meer tegen, dacht ik, drollenvangers. En toch waren er nog jongens die ze moesten dragen: een soort pofbroek, meestal in kleine bruinachtige ruitjes, vlak onder de knie in een hoge kous gestopt, zodat de broek er daar overheen bolde."},{"w":"Verdikkeme","f":"Nee, verdikkeme was háár uitdrukking van mijn sporadische god-ver-domme! En toch schrok ze er elke keer zelf van, van verdikkeme."},{"w":"Vrijen","f":"Tot voor kort werd vrijen nog als zodanig gebruikt, maar dezer dagen wordt opeens seksen gezegd. Vrijen is weer teruggebracht tot zo’n beetje lekker tegen elkaar aan bewegen, omhelzen en kussen, zonder dat er sprake is van ‘geslachtelijke gemeenschap’."},{"w":"Gaandeweg","f":"Gaandeweg kreeg Jeroen de indruk dat- ie behoorlijk in de zeik werd genomen door z’n nieuwe vriend met zijn witte poedeltje, terwijl ze op weg waren naar de crucifix boven op de berg, en de nieuwe vriend beweerde dat Jeroen een wereldwonder zou gaan aanschouwen."},{"w":"Geteisem","f":"En ik weet niet of dat voor het Jiddische chat ook zo is, want geteisem stamt van het Jiddische chatteisem. Dat zou wel toevallig zijn."},{"w":"Tenhemelschreiend","f":"Maar, tenhemelschreiender is de kunstenaar die gesmolten aluminium in een ondergronds mierennest goot om later met het gestolde resultaat te pronken: kunst."},{"w":"Lummel","f":"Zei men nog niet zo lang geleden (nou ja, een jaar of dertig): ‘Kijk toch uit, lummel! ’ dan zegt men nu: ‘Kan je niet uit je doppe kijken, idioot!"},{"w":"Flapuit","f":"Het verdwijnende, of zeg maar vrijwel verdwenen, woord flapuit behoort tot de meisjesboekenliteratuur van de jaren vijftig van vorige eeuw."},{"w":"Verblijden","f":"Een aantal jaren geleden wilde je een ander nog wel eens verblijden (meestal met een cadeautje), en dat is natuurlijk nog steeds zo (maar nu met bijvoorbeeld een lief compliment), alleen heet het geen verblijden meer, maar blij maken, verwennen, plezieren, behagen."},{"w":"Flansen","f":"Er wordt veel in elkaar gezet door menigeen, en kennelijk werd dat vaak zo overhaast en slordig gedaan, dat er een speciaal werkwoord voor ontstond: in elkaar flansen."},{"w":"Bakvis","f":"Dit verdwenen woord werd nog in de jaren vijftig/zestig gebruikt om een meisje in de pubertijd aan te duiden: ‘Ach ja, ze is nog een bakvis, hè."},{"w":"Opkalefateren","f":"Neem opkalefateren, dat stamt uit het Grieks en werd in de scheepsbouw geïntroduceerd: naden in scheepsrompen dichtmaken. En dat is dan geëvolueerd tot opknappen."},{"w":"Matteklap","f":"In het bijzonder natuurlijk iemand, neem ik aan, die meegedaan heeft aan de koloniale oorlog in Indonesië in 19‘46 en daar met veel andere Nederlanders zo heeft huisgehouden dat hij er zelf later matteklap van werd, zoals de Nederlandse verbastering luidt."},{"w":"Mierenneuker","f":"Al dagenlang sjokte de mierenneuker mismoedig door het herfstbos. Zijn lust begon voor hem ongekende vormen aan te nemen."},{"w":"Gauwigheid","f":"In de gauwigheid had ik m’n sleutels laten liggen, daarom ben ik weer terug. Nou, daar ga ik weer."},{"w":"Smiecht","f":"Een valserik (ook al zo’n stom woord van haar) werd toen een smiecht genoemd, een huichelaar, een kleine leugenaar. Hoe vaak heeft ze niet ‘Smiecht!"},{"w":"Waarachtig","f":"Het mooie van het woord waarachtig is dat het in één keer aanduidt dat het bijna niet waar kan zijn, het is waar-achtig. In de gebruikelijke uitspraak ligt de klemtoon dus verkeerd, het moet op de twee a’s."},{"w":"Lommer","f":"Bij lommer gaat het om de schaduw die het gebladerte – of liever: struweel – van hoog struikgewas of ruisende bomen ons biedt. Lommer bestaat dan ook bij de gratie van een of meerdere personen die in de lommer gaan zitten of liggen (zie bij: Eenbenig, deel 2)."},{"w":"Geitebreier","f":"Hij sprak verschillende van zijn medewerkers aan met geitebreier. Dat was toen grappig."},{"w":"Argwaan","f":"Misschien komt het doordat argwaan veel eenzamer in het leven staat en minder houvast heeft dan wantrouwen, dat immers uiteindelijk nog enige steun heeft aan haar zusje ‘vertrouwen’."},{"w":"Wablief","f":"Wablief is de mooie, maar helaas verdwijnende (behalve op het platteland, en in Limburg en Vlaanderen) op licht verontwaardigde toon gestelde vraag: ‘Wát zeg je?!"},{"w":"Voetangel","f":"Vroeger strooide men ze op de weg, de voetangels, om de doortocht van vijandige personen of smokkelaars te verhinderen. Ze werden ook wel kraaienpoten genoemd."},{"w":"Behept","f":"Truus (daar hep je d’r weer) hep een grote muil,’ ofwel: Truus is behept met een grote bek. Of: ‘Truus is behept met een enge ziekte."},{"w":"Schreien","f":"Ze neemt niet de moeite ze af te vegen, een schreiend meisje huilt voor zichzelf: ze schreit. Maar nog mooier is een schreiende man – althans in het begin."},{"w":"Mokkel","f":"Moppie hoort daarbij, net als mokkel een aanduiding voor een meisje of vrouw. En sores voor gedoe, ponem of porum voor gezicht, of Mokum voor Amsterdam zelf."},{"w":"Fuifnummer","f":"Iedereen had in zijn of haar kennissenkring wel iemand die door anderen – meestal met lichte spot – een fuifnummer werd genoemd. We hebben het‘t hier dus over de tweede helft van vorige eeuw."},{"w":"Kniesoor","f":"Kniezen is mopperen, bij de pakken neer zitten, tobben, treuren, dus een kniesoor is een kruising tussen een zeurkous, een mopperkont en een stuk chagrijn."},{"w":"Ringeloren","f":"In overdrachtelijke zin werd het woord daarna ook gebruikt, maar alleen in een negatiefve verband: ‘Ik laat me niet ringeloren door die gast."},{"w":"Wastobbe","f":"Nog maar enige tientallen jaren geleden, toen de elektrische wasmachine er nog niet was, werd de was in een (meestal houten of zinken) wastobbe gedaan, een grote teil met zeer heet sop."},{"w":"Draaitafel","f":"Draaitafel bijvoorbeeld klinkt niet alleen mooi, maar is, voor wie het voorwerp niets zegt, ook een geheimzinnig woord. Draaitafel."},{"w":"Heetgebakerd","f":"Zo ontstond het idee dat mensen, die als baby na de geboorte te dicht ‘bij het vuur’ op een bakermat hadden gelegen, hun verdere leven nogal kortaangebonden bleven, tegen het driftige af, onbeheerst en snel opvliegend: heetgebakerd."},{"w":"Bleekscheet","f":"Donkergekleurde mensen in Nederland hadden in de afgelopen decennia nauwelijks één scheldwoord (bleekscheet) of aanduiding (macamba op Curaçao) voor mensen met een lichte huidskleur."},{"w":"Esperanto","f":"Nu weet ik dat er in Frankrijk ook nog steeds een hoop communisten bestaan, het land houdt van zijn verleden, maar van Esperanto dacht ik dat de aanhangers het al lang geleden hadden opgegeven, nu het Engels internationaal aan het zegevieren is."},{"w":"Balsturig","f":"Een balsturige man (of vrouw of kind) kan alle kanten oprollen, daar is weinig verrassends aan, het woord zegt het al: balsturig. Het enige verrassende is wélke kant het dan wel zal oprollen."},{"w":"Losbol","f":"Nou, ik denk dat deze losbol ook nog eens‘s een egocentrische aandachttrekker is."},{"w":"Plompverloren","f":"Plompverloren betekent in het wilde weg en onnadenkend tegelijk, en ook zit er het woordje lomp in verscholen om er nog een mooie gevoelswaarde aan te geven."},{"w":"Wiedes","f":"Wat vind jij mooier: het stelletje ‘nogal wiedes’ of ‘nogal logisch’?"},{"w":"Ratjetoe","f":"Ratjetoe: zo at men vroeger, en misschien nog steeds, in veel Hollandse gezinnen het ‘warme eten’: aardappels (nu ook: pasta), suddervlees, doorgekookte groente, jus, en prakken maar."},{"w":"Sapperloot","f":"Sapperloot verkreeg een zekere populariteit omdat het af en toe in de Kuifje-stripboeken werd gebezigd. Het drukt een mengeling uit van lichte verbazing en lichte verontwaardiging."},{"w":"Scheutig","f":"Het is eigenlijk raar dat een scheut olijfolie of een scheut van een plant lang niet zo vrijgevig is als iemand die scheutig is met zijn complimenten of zo uitbundig als iemand die scheutig is met kritiek."},{"w":"Ginnegappen","f":"Het is een irritant mengsel van giechelen en grinniken: ginnegappen. ‘Klieren,’ had ook gekund."},{"w":"Zwammen","f":"Natuurlijk, zwammen zien we soms in het bos of de tuin staan. Prachtige voortbrengselen van de natuur."},{"w":"Theebuiltje","f":"Oma’s deden tot voor enige jaren wel vier keer met hetzelfde theebuiltje: je kon er wel vier potjes mee zetten. Want niet alleen werd de taal in de loop der tijd kariger, en ging men van theezakje spreken, maar ook werd tegelijk het gedrag steeds ‘luxueuzer’."},{"w":"Eigenheimer","f":"Onbekend is of de aardappelsoort eigenheimer genoemd is naar de eigenwijze individualist, genoemd eigenheimer, of juist andersom. Misschien bestaat er wel een leuk boek met een eigenwijze aardappel in de hoofdrol."},{"w":"Weeromstuit","f":"Het is een vrij letterlijke vertaling van ‘reactie’, en van de weeromstuit, zoals het woord wordt gebruikt, betekent gewoon ‘als reactie op’, waarmee om een of andere reden opeens alle charme en geheimzinnigheid van het woord weeromstuit voor mij is verdwenen."},{"w":"Muggenzifter","f":"Maar er gaat toch weinig toch boven muggenzifter zelf: een gek geworden waterbouwkundige – stel ik me zo voor – die met een grote keukenzeef een paar dooie muggen uit het water van een klaterende beek probeert te scheppen teneinde hem glashelder te houden."},{"w":"Ruiker","f":"De ruiker intussen – zeg maar plat: een bos bloemen – werd aan een vrouw gegeven wanneer ze trouwde, jarig was of desnoods als ze een etentje gaf."},{"w":"Zemelen","f":"Zemelen is zo’n woord dat als zelfstandig naamwoord functioneert én als werkwoord. In het eerste geval zijn het vormen van granen en kiemen, die de stoelgang bevorderen."},{"w":"Grijpstuiver","f":"En daarmee vreemd genoeg ook de grijpstuiver, die een toch een meer veelomvattende en overdrachtelijke betekenis had of heeft. Het is net zoiets als de ‘jodenfooi’, een merkwaardige discriminatoire benaming, gebruikt door mensen die veronderstelden dat Jjoden geldbelust en gierig zouden zijn."},{"w":"Hannesen","f":"We kennen Hans Worst, of een hansworst, ook is er het woord hannesen: zich een beetje onhandig gedragen, en dan daarover in verwijtende zin aangesproken worden: wat sta je daar weer te hannesen."},{"w":"Graftak","f":"Graftak klinkt ook wel grappig, omdat het zo’n buitenproportioneel gezocht scheldwoord is, denk ik. Ooit werd een voetbalwedstrijd van f."},{"w":"Minkukel","f":"Het woord minkukel sprak kennelijk zo aan dat het – zonder enige verwijzing naar de strip – als woord in het dagelijks spraakgebruik ingang vond om een zekere minachtig over iemand kenbaar te maken."},{"w":"Welletjes","f":"Sabine las het woord als kind voor het eerst, jaren terug, in Jan, Jans en de Kinderen en werd er melancholiek van, omdat het haar naar de jaren vijftig deed verlangen: om aan een jarenvijftigtafel te zitten smakken, waarna haar moeder met een jarenvijftigknotje op haar hoofd zou zeggen: het is nu wel welletjes geweest."},{"w":"Lijntrekken","f":"Hoewel er bijna niets mooiers is dan een goed getrokken potloodlijn op een blanco tekenvel, zie ik bij lijntrekken toch in de eerste plaats zo’n karretje voor me waarmee op de grasmat van het sportveld witte kalklijnen worden of werden getrokken."},{"w":"Flierefluiter","f":"De flierefluiter is ongetwijfeld een broertje van de losbol (zie ook bij de L), waarbij de laatste zich echt nergens wat van aantrekt, terwijl de flierefluiter schouderophalend en vrolijk fluitend door het leven gaat."},{"w":"Grutjes!","f":"Vreemd genoeg zeiden mannen in die tijd nooit ‘goeie grutjes’. Dat kwam waarschijnlijk ook omdat vrouwen in die tijd sowieso niet mochten vloeken."},{"w":"Rijwiel","f":"Over de oorsprong van de woorden rijwiel en fiets, die hetzelfde aanduiden, is veel te doen geweest, maar echt duidelijk is het niet waar ze vandaan komen."},{"w":"Spatsies","f":"De kapsoneslijer heeft daarbij ook nog last van een hoge dunk van zichzelf, vinden zijn of haar critici, hij moet niet zo veel spatsies hebben."},{"w":"Hummel","f":"Moet je die lummel nou eens zien, met z’n puistenkop – ik weet nog goed dat- ie hier als hummeltje rondkroop met z’n donkere krulletjes."},{"w":"Kinnesinne","f":"Mag niet verhinderen dat dit mooie woord kinnesinne het vooralsnog heeft afgelegd tegen ‘jaloezie’ en zelfs tegen het mooie, maar ook verdwijnende ‘afgunst’."},{"w":"Tierelier","f":"Het interesseert me geen tierelier, zo luidt de uitdrukking, en er is bijna geen uitdrukking die zo goed uitdrukt wat- ie wil uitdrukken."},{"w":"Apegapen","f":"Maar goed, omdat apegapen zo’n mooi binnenrijm met zich meevoert en zo’n grappig woord lijkt te zijn, zie ik het door de vingers. Zonder uitzondering, geen regel."},{"w":"Addergebroed","f":"Bovendien schijnt addergebroed een woord te zijn dat uit de Bijbel stamt, waarin de christelijke leer wordt verwoord. Weinig liefdevol voor deze medeschepselen, lijkt me dat."},{"w":"Droldrie","f":"Behalve voor ‘dreumes’, werd droldrie ook gebruikt voor ‘klein onderkruipsel’. En als er een humorist in de buurt was, riep die ook nog: ‘Wie?"},{"w":"Dwaallicht","f":"Het mooiste is het, zoals vroeger wel eens gebruikt werd: als verwijt tegen een niet zo snuggere jongen of dito meisje die/dat de weg wat kwijt is: ‘Dwaallicht!"},{"w":"Verkneukelen","f":"Bij het mooie woord verkneukelen hoort vaak een aantal gebaren die inderdaad heel dicht bij het woord verkreukelen komen. De verkneukelaar neemt dan een voorschotje op iets heel erg leuks wat kennelijk komen gaat en balt de vuisten lichtjes, beweegt daarbij met ietwat geheven onderarmen en schouders onafhankelijk in draaiende beweginkjes (probeer maar), trekt een vrolijke grimas en ontkomt niet aan een paar…"},{"w":"Gezwind","f":"Nu is gezwind sowieso al een wat oubollig woord (dat snel of haastig betekent), maar hoe kan nu iets met haastige pas helen? Zoals eerder opgemerkt: het zijn vooral krantenkoppen, politici en andere deftigdoeners die verouderde of verouderende woorden nog gebruiken."},{"w":"Misbaksel","f":"Maar vooral ook de schijnheilige harses van degene die zojuist toegesproken werd, het misbaksel zelf. Soms was je dat zelf."},{"w":"Paskwil","f":"Bij ons thuis of in onze omgeving werd het woord paskwil nooit gebruikt, maar toch heb ik er wel eens van gehoord, toen. En dan meer in een negatieve toonzetting, voor zover ik me kan herinneren: ‘Dit is werkelijk geen paskwil."},{"w":"Ontgoocheld","f":"Dit woord krijgt zijn glans door de bijna ontroerende blik die de ontgoochelde persoon ons biedt. Alleen de beste acteurs kunnen op verzoek het mooist zo ontgoocheld kijken."},{"w":"Uilskuiken","f":"Een uilskuiken is juist een mooi woord voor een schattig dier. Ook de vrouwelijke persoon die we als uilskuiken aanduiden is behalve misschien iets dommig toch ook vooral aandoenlijk, ja, donzig zou ik bijna zeggen."},{"w":"Kinnebak","f":"Het mooie kinnebak wordt nauwelijks meer gebruikt, duidelijk een verdwijnend woord dus. Het is de onderkaak van iemand met aanhangende onderkin, vandaar die bak."},{"w":"Slabakken","f":"We spreken liever van slakommen, maar hier wordt het woord bedoeld met de klemtoon op bak en dan is het opeens een werkwoord: ‘Sta niet zo te slabákken."},{"w":"Helleveeg","f":"Wat een kutwijf’ wordt nog wel eens‘s over een dame gezegd, maar ik zou het dan toch liever houden op helleveeg. Vanwege die e’s dus."},{"w":"Dwepen","f":"Ook jongens van diverse leeftijden kunnen hun helden en heldinnen overdreven verafgoden – noem het maar dwepen. Of verheerlijken."},{"w":"Klikspaan","f":"Als klikspaan nam je het risico jezelf buiten ‘de groep’ te plaatsen. Daar stond kennelijk iets beters tegenover: namelijk een gunst van de degene bij wie je klikte (ouder, onderwijzer[es], scheidsrechter, hoger kind in de pikorde, buurman/vrouw), zoals een goedkeurende knik, de hoop op een hoger cijfer, het zelf ontlopen van een straf, of zelfs een beloning."},{"w":"Gespuis","f":"Gespuis beschikt dan ook over dezelfde synoniemen, al kan ik er hier de aan het Frans ontleende woorden crapuul, rapaille en canaille alvast aan toevoegen."},{"w":"Hokken","f":"Hokken is behalve een meervoud van hok ook een werkwoord dat ‘ongetrouwd samenwonen’ betekent. Dat was nog niet zo lang geleden zeer afkeurenswaardig in sommige burgerlijke kringen."},{"w":"Driftkikker","f":"Het soort sterft niet uit, maar deze benaming driftkikker wel. Toch?"},{"w":"Heikneuter","f":"Nu zou dat zelfs spellingsgewijs boerenheikneuter moeten heten, met zo’’n vermaledijde tussen-n. Een discriminerend woord, dat doet veronderstellen dat mensen van de hei en dan in het bijzonder boeren uit die streken, nogal simpel van aard zijn."},{"w":"Pontificaal","f":"Daar zat hij, naakt, ietwat achterovergebogen, zijn piem stond er pontificaal bij, in de betekenis van plechtig en stijf. Zo zag de tekening eruit van een beeldschone jongen, die Marlene Dumas publiceerde in een bijlage van nrc Handelsblad."},{"w":"Ploert","f":"Gelukkig bestond in die tijd ook de ploertendoder (een flexibele knuppel met een loden eind), dus voor die vrouwen was het verder een fluitje van een cent."},{"w":"Kommaneuken","f":"Ja, met die kommaneuker is weer een Pietje-p Precies aan de bak, een Pietlut met tekort aan seks. Meestal wordt daarbij een ouderwets beeld van een ambtenaar of onderwijzer voorgesteld uit een voorbije tijd die zich verlustigt in het neuken van komma’s."},{"w":"Glunderen","f":"Volgens velen in mijn buurt is glunderen misschien wel een mooi klinkend, maar zeker geen verdwijnend woord. En dat is dan maar goed ook, naar mijn mening."},{"w":"Uilezeik","f":"Volgens de boekjes werd lauwe thee ook wel eens uilezeik genoemd in de hoofdstad, terwijl sommigen in Den Haag spraken van uilezeik bij een beroerd bakkie (koffie)."},{"w":"Uitvaagsel","f":"Daarom is uitvaagsel tegelijk ook een tamelijk onbruikbaar woord. Het schiet zijn of haar doel voorbij."},{"w":"Billenkoek","f":"Billenkoek is een mooi woord omdat het zo beeldend is: koek voor of van den bil. Tegelijk is het een belachelijk woord, een pak op de billen, zoals vroeger ook nog wel eens‘s op plaatjes stond."},{"w":"Pardoes","f":"Pardoes vloog Karel, de zeemeeuw, dwars door de nieuwe winkelruit van Fa. Van Heteren, het elektronicabedrijf waar juist vorige week nog een poging tot ramkraken was gedaan, wat wel tot ernstige beschadiging van de pui had geleid, maar niet tot enige diefstal van de elektronica."},{"w":"Schroom","f":"Je kan zeggen: het meisje was verlegen, maar niet: het meisje had schroom. En weer wel: zij had een zekere schroom."},{"w":"Xantippe","f":"Haar derde naam werd onder protest van haar omgeving Xantippe, een prachtige derde naam, die haar vader er bij de aangifte op het gemeentehuis eigengereid bij liet zetten."}];
+
+/* voorbeeldinzendingen, in de demo alvast gevuld */
+var INZENDINGEN_START = {
+  kwispedoor:[
+    {naam:'Ans, 71 · voorbeeld', tekst:'Bij mijn opa in het café stond er een, van koper, en hij werd elke maandag geboend. Niemand raakte hem aan.'},
+    {naam:'Joost · voorbeeld', tekst:'Ik kende alleen het woord, uit een kruiswoordpuzzel. Ik dacht altijd dat het een muziekinstrument was.'}
+  ],
+  schuinsmarcheerder:[
+    {naam:'Marijke · voorbeeld', tekst:'Mijn moeder noemde de buurman zo, met een stem waarin bewondering zat die ze niet wilde toegeven.'}
+  ],
+  talmen:[
+    {naam:'Fatima, 29 · voorbeeld', tekst:'Ik ken het woord van mijn oma en gebruik het nu zelf, meestal over mezelf.'}
+  ]
+};
+
+/* =========================================================
+   2. GEREEDSCHAP
+   ========================================================= */
+
+/* opslag met vangnet: werkt ook als localStorage geblokkeerd is */
+var opslag = (function(){
+  var werkt = false, tijdelijk = {};
+  try{
+    var p = '__rwp__';
+    window.localStorage.setItem(p,'1');
+    window.localStorage.removeItem(p);
+    werkt = true;
+  }catch(e){ werkt = false; }
+  return {
+    werkt:werkt,
+    lees:function(sleutel, standaard){
+      try{
+        var ruw = werkt ? window.localStorage.getItem(sleutel) : tijdelijk[sleutel];
+        if(ruw === null || ruw === undefined) return standaard;
+        return JSON.parse(ruw);
+      }catch(e){ return standaard; }
+    },
+    schrijf:function(sleutel, waarde){
+      var ruw;
+      try{ ruw = JSON.stringify(waarde); }catch(e){ return false; }
+      try{
+        if(werkt){ window.localStorage.setItem(sleutel, ruw); return true; }
+      }catch(e){ werkt = false; }
+      tijdelijk[sleutel] = ruw;
+      return false;
+    }
+  };
+})();
+
+function esc(s){
+  return String(s === undefined || s === null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function $(kies, waar){ return (waar || document).querySelector(kies); }
+function $$(kies, waar){ return Array.prototype.slice.call((waar || document).querySelectorAll(kies)); }
+function omroep(bericht){ var o = $('#omroep'); if(o) o.textContent = bericht; }
+function vindWoord(id){
+  for(var i=0;i<WOORDEN.length;i++){ if(WOORDEN[i].id === id) return WOORDEN[i]; }
+  return null;
+}
+var MAANDEN = ['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+function datumTekst(d){ return d.getDate() + ' ' + MAANDEN[d.getMonth()] + ' ' + d.getFullYear(); }
+function datumSleutel(d){
+  var m = d.getMonth()+1, g = d.getDate();
+  return d.getFullYear() + '-' + (m<10?'0':'') + m + '-' + (g<10?'0':'') + g;
+}
+function dagNummer(d){ return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000); }
+/* kleine, voorspelbare toevalsgenerator, zodat het spel voor iedereen gelijk is */
+function toeval(zaad){
+  return function(){
+    zaad |= 0; zaad = (zaad + 0x6D2B79F5) | 0;
+    var t = Math.imul(zaad ^ (zaad >>> 15), 1 | zaad);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function husselMet(rij, rnd){
+  var uit = rij.slice();
+  for(var i = uit.length - 1; i > 0; i--){
+    var j = Math.floor(rnd() * (i + 1));
+    var h = uit[i]; uit[i] = uit[j]; uit[j] = h;
+  }
+  return uit;
+}
+
+/* =========================================================
+   3. PAGINA'S
+   ========================================================= */
+var hoofd = document.getElementById('hoofd');
+var eersteKeer = true;
+
+function slijt(tekst, waarde, klasse){
+  return '<span class="slijt ' + (klasse || '') + '" style="--w:' + waarde + '">' + esc(tekst) + '</span>';
+}
+function opslagWaarschuwing(){
+  if(opslag.werkt) return '';
+  return '<p class="melding stil">Uw browser bewaart hier niets (opslag staat uit of het bestand draait vanaf schijf met beperkte rechten). Alles werkt gewoon, maar het verdwijnt zodra u de pagina sluit.</p>';
+}
+
+/* ---------- 1. voorpagina ---------- */
+function paginaVoor(){
+  var muurRij = [];
+  /* van vol in de inkt naar bijna weg: de muur lost naar onderen op */
+  WOORDEN.slice().sort(function(a,b){ return a.slijtage - b.slijtage; }).forEach(function(w){
+    muurRij.push('<a class="muurwoord" href="#/woord/' + esc(w.id) + '">' + slijt(w.woord, w.slijtage) + '</a>');
+  });
+  PROEVERIJ.slice(0,6).forEach(function(k){
+    muurRij.push('<a class="muurwoord" href="#/uitdeel1">' + slijt(k.woord, k.slijtage) + '</a>');
+  });
+
+  return '' +
+  '<section class="vel hero">' +
+    '<div>' +
+      '<h1><span class="klein">Het</span>' +
+        '<span class="regel">Retro</span>' +
+        '<span class="regel roze">woorden</span>' +
+        '<span class="regel">' + slijt('paradijs', 0.5, 'slijt--grof') + '</span>' +
+      '</h1>' +
+    '</div>' +
+    '<div>' +
+      '<p class="tagline">Woorden die bijna weg zijn, en <b>korte films</b> die het verdwijnen zelf in beeld brengen.</p>' +
+      '<p class="etiket">Bij deel twee van Van Allegaartje tot Zeebenen · in de maak</p>' +
+    '</div>' +
+  '</section>' +
+
+  '<section class="vel muurblok" aria-labelledby="muurkop">' +
+    '<h2 id="muurkop" class="verborgen">De woordenmuur</h2>' +
+    '<div class="muur" id="muur" style="--t:1">' + muurRij.join('') + '</div>' +
+    '<div class="inktmeter">' +
+      '<p class="uitleg">De <b>Inktmeter</b>: schuif terug in de tijd en de inkt komt terug. Schuif naar nu en de woorden slijten weg. Wie een woord aankijkt, houdt het even in leven.</p>' +
+      '<div class="meterrij">' +
+        '<label class="verborgen" for="meter">Inktmeter: kies een jaartal tussen 1950 en 2026</label>' +
+        '<span class="jaartal" id="jaartal" aria-hidden="true">2026</span>' +
+        '<input class="schuif" type="range" id="meter" min="1950" max="2026" step="1" value="2026">' +
+      '</div>' +
+    '</div>' +
+  '</section>' +
+
+  '<section class="vel" aria-labelledby="ingangkop">' +
+    '<h2 id="ingangkop" class="verborgen">Drie ingangen</h2>' +
+    '<div class="ingangen">' +
+      '<a class="ingang" href="#/woordenbank"><span class="nr">01</span><h3>Woordenbank</h3><p>De kandidaten voor deel twee, met betekenis en het beeld waarmee ze verdwijnen.</p></a>' +
+      '<a class="ingang" href="#/spel"><span class="nr">02</span><h3>Dagelijks spel</h3><p>Eén fragment per dag uit het eerste boek, met het woord eruit geknipt. Eén poging.</p></a>' +
+      '<a class="ingang" href="#/inleverloket"><span class="nr">03</span><h3>Inleverloket</h3><p>Kent u een woord dat aan het verdwijnen is? Lever het hier in.</p></a>' +
+    '</div>' +
+  '</section>' +
+
+  '<section class="vel" aria-labelledby="filmkop">' +
+    '<div class="blok">' +
+      '<h2 id="filmkop">Bij een selectie een film van een minuut</h2>' +
+      '<p class="lood groot">Een tekening in beweging, met de stem van Rogier Proper die zijn tekst voorleest. De beelden verbeelden het woord niet, ze verbeelden het verdwijnen: de maan die achter de zon wegschuift, een klontje suiker dat oplost, een zwerm vogels naar de einder, een kind dat verdwijnt achter zijn eigen handen. Bij andere woorden een foto die op zichzelf al een verdwijning toont.</p>' +
+      '<p><a class="knop knop--blauw" href="#/woord/kwispedoor">Bekijk een voorbeeldpagina</a></p>' +
+    '</div>' +
+  '</section>';
+}
+
+function naVoor(){
+  var meter = document.getElementById('meter');
+  var muur = document.getElementById('muur');
+  var jaartal = document.getElementById('jaartal');
+  if(!meter || !muur) return;
+  function zet(){
+    var jaar = parseInt(meter.value, 10);
+    var t = (jaar - 1950) / 76;
+    muur.style.setProperty('--t', String(Math.round(t * 1000) / 1000));
+    jaartal.textContent = String(jaar);
+    meter.setAttribute('aria-valuetext', jaar + ', de woorden slijten voor ' + Math.round(t * 100) + ' procent');
+  }
+  meter.addEventListener('input', zet);
+  zet();
+}
+
+/* ---------- 2. woordenbank ---------- */
+var bankZoek = '';
+var bankLetter = '';
+
+function bankFilter(){
+  return WOORDEN.filter(function(w){
+    var pastLetter = !bankLetter || w.woord.charAt(0).toLowerCase() === bankLetter;
+    var z = bankZoek.trim().toLowerCase();
+    var pastZoek = !z || w.woord.toLowerCase().indexOf(z) > -1 ||
+      w.betekenis.toLowerCase().indexOf(z) > -1 || w.motief.toLowerCase().indexOf(z) > -1;
+    return pastLetter && pastZoek;
+  });
+}
+function kaartenHtml(){
+  var rij = bankFilter();
+  if(!rij.length){
+    return '<p class="melding">Geen woord gevonden. Probeer een andere letter, of <a href="#/inleverloket">lever het woord zelf in</a>.</p>';
+  }
+  return '<div class="kaartrooster">' + rij.map(function(w){
+    return '<article class="kaart">' +
+      '<h3><a href="#/woord/' + esc(w.id) + '">' + slijt(w.woord, w.slijtage, 'slijt--fijn') + '</a></h3>' +
+      '<p class="soort">' + esc(w.soort) + '</p>' +
+      '<div class="slijtbalk"><span>slijtage</span><span class="baan"><i style="width:' + Math.round(w.slijtage*100) + '%"></i></span><span>' + Math.round(w.slijtage*100) + '%</span></div>' +
+      '<p class="betekenis">' + esc(w.betekenis) + '</p>' +
+      '<p class="motief"><span>Motief van de film</span>' + esc(w.motief) + '</p>' +
+    '</article>';
+  }).join('') + '</div>';
+}
+function paginaBank(){
+  var letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
+  var aanwezig = {};
+  WOORDEN.forEach(function(w){ aanwezig[w.woord.charAt(0).toLowerCase()] = true; });
+  var alfabet = '<li><button type="button" data-letter="" aria-pressed="' + (bankLetter===''?'true':'false') + '">Alle</button></li>' +
+    letters.map(function(l){
+      return '<li><button type="button" data-letter="' + l + '"' +
+        (aanwezig[l] ? '' : ' disabled') +
+        ' aria-pressed="' + (bankLetter===l?'true':'false') + '">' + l.toUpperCase() + '</button></li>';
+    }).join('');
+
+  return '' +
+  '<section class="vel">' +
+    '<div class="paginakop">' +
+      '<h1>Woordenbank</h1>' +
+      '<p class="groot">De kandidaten voor deel twee. Elk woord met zijn betekenis en het motief van de film die erbij komt. Hoe verder de slijtage, hoe minder inkt er nog op het papier ligt.</p>' +
+    '</div>' +
+    '<div class="zoekvak">' +
+      '<label class="veldnaam" for="zoek">Zoek een woord of een betekenis</label>' +
+      '<input type="search" id="zoek" placeholder="bijvoorbeeld: talmen, of oplossen" value="' + esc(bankZoek) + '">' +
+    '</div>' +
+    '<ul class="alfabet" id="alfabet" aria-label="Filter op beginletter">' + alfabet + '</ul>' +
+    '<p class="telling" id="telling"></p>' +
+    '<div id="bankrooster">' + kaartenHtml() + '</div>' +
+  '</section>';
+}
+function bankTelling(){
+  var n = bankFilter().length;
+  var t = document.getElementById('telling');
+  if(t) t.textContent = n === 1 ? '1 woord' : n + ' woorden';
+}
+function naBank(){
+  var zoek = document.getElementById('zoek');
+  var rooster = document.getElementById('bankrooster');
+  bankTelling();
+  if(zoek){
+    zoek.addEventListener('input', function(){
+      bankZoek = zoek.value;
+      rooster.innerHTML = kaartenHtml();
+      bankTelling();
+      omroep(bankFilter().length + ' woorden gevonden');
+    });
+  }
+  var alf = document.getElementById('alfabet');
+  if(alf){
+    alf.addEventListener('click', function(e){
+      var knop = e.target.closest('button');
+      if(!knop || knop.disabled) return;
+      bankLetter = knop.getAttribute('data-letter');
+      $$('button', alf).forEach(function(b){
+        b.setAttribute('aria-pressed', b.getAttribute('data-letter') === bankLetter ? 'true' : 'false');
+      });
+      rooster.innerHTML = kaartenHtml();
+      bankTelling();
+      omroep(bankFilter().length + ' woorden gevonden');
+    });
+  }
+}
+
+/* ---------- 3. woordpagina ---------- */
+function inzendingenVan(id){
+  var eigen = opslag.lees('rwp_inz_' + id, []);
+  return (INZENDINGEN_START[id] || []).concat(eigen);
+}
+function stemHtml(w){
+  var eigen = opslag.lees('rwp_stem_' + w.id, null);
+  if(!eigen){
+    return '<div class="stemknoppen">' +
+      '<button class="knop knop--zwaar" type="button" data-stem="ja">Ja, ik kende het</button>' +
+      '<button class="knop" type="button" data-stem="nee">Nee, nooit van gehoord</button>' +
+    '</div>';
+  }
+  return '<p class="uitslag">U stemde: <strong>' +
+    (eigen === 'ja' ? 'ik kende dit woord' : 'nooit van gehoord') + '</strong>.' +
+    '<span class="staaf" role="img" aria-label="uw stem"><i class="' + (eigen === 'ja' ? 'ja' : 'nee') + '" style="width:100%"></i></span>' +
+    'In de demo telt alleen uw eigen stem, in uw eigen browser. Op de echte site komt hier de uitslag van alle bezoekers.</p>';
+}
+function inzendingHtml(id){
+  var rij = inzendingenVan(id);
+  if(!rij.length) return '<p class="lood">Nog geen inzendingen bij dit woord. U kunt de eerste zijn.</p>';
+  return rij.map(function(i){
+    return '<div class="inzending"><p>' + esc(i.tekst) + '</p><p class="wie">' + esc(i.naam || 'anoniem') + '</p></div>';
+  }).join('');
+}
+function paginaWoord(id){
+  var w = vindWoord(id);
+  if(!w) return paginaKwijt();
+  var echt = w.bron === 'rogier';
+  return '' +
+  '<article class="vel woordkop">' +
+    '<p class="terug"><a href="#/woordenbank">Terug naar de woordenbank</a></p>' +
+    '<h1 class="woordtitel">' + slijt(w.woord, w.slijtage, 'slijt--grof') + '</h1>' +
+    '<p class="woordmeta">' + esc(w.soort) + ' · slijtage ' + Math.round(w.slijtage*100) + ' procent</p>' +
+    '<p class="woordbetekenis">' + esc(w.betekenis) + '</p>' +
+
+    '<div class="filmvlak">' +
+      '<span class="blob"></span><span class="blob"></span><span class="blob"></span>' +
+      '<span class="vignet"></span><span class="kader"></span><span class="tijd">0:00 / 1:00</span>' +
+      '<span class="binnen"><strong>' + esc(w.motief) + '</strong><span>de film volgt</span></span>' +
+    '</div>' +
+    '<p class="filmonder">Ongeveer één minuut. Een tekening in beweging, met de stem van Rogier Proper. Het beeld toont niet het woord, maar het verdwijnen ervan.</p>' +
+
+    '<div class="tekstblok">' +
+      (echt
+        ? '<span class="aanhef">Tekst van Rogier Proper</span><div class="rogier"><p>' + esc(w.tekst) + '</p></div>'
+        : '<span class="aanhef plaats">Plaatshouder, hier komt Rogiers tekst</span><div class="plaatshouder"><p>' + esc(w.tekst) + '</p><p>[ te vervangen door de definitieve tekst over <strong>' + esc(w.woord) + '</strong> ]</p></div>'
+      ) +
+      '<p class="lood" style="margin-top:1.4rem"><em>In een zin:</em> ' + esc(w.voorbeeld) + '</p>' +
+    '</div>' +
+
+    '<section class="blok" aria-labelledby="stemkop">' +
+      '<h2 id="stemkop">Kende u dit woord?</h2>' +
+      '<div id="stemvak">' + stemHtml(w) + '</div>' +
+    '</section>' +
+
+    '<section class="blok" aria-labelledby="inzkop">' +
+      '<h2 id="inzkop">Inzendingen van bezoekers</h2>' +
+      '<div id="inzlijst">' + inzendingHtml(w.id) + '</div>' +
+      '<h3 style="margin-top:1.8rem">Zelf een herinnering toevoegen</h3>' +
+      opslagWaarschuwing() +
+      '<form class="formulier" id="inzform" novalidate>' +
+        '<div class="veld">' +
+          '<label class="veldnaam" for="inznaam">Uw naam</label>' +
+          '<input type="text" id="inznaam" name="naam" autocomplete="name" placeholder="bijvoorbeeld: Ans, 71">' +
+        '</div>' +
+        '<div class="veld">' +
+          '<label class="veldnaam" for="inztekst">Uw herinnering aan dit woord</label>' +
+          '<textarea id="inztekst" name="tekst" required aria-describedby="inzhulp"></textarea>' +
+          '<p class="hulp" id="inzhulp">Waar hoorde u het, en van wie? Twee zinnen is genoeg.</p>' +
+        '</div>' +
+        '<div><button class="knop knop--blauw" type="submit">Herinnering toevoegen</button></div>' +
+        '<div id="inzmelding" role="status"></div>' +
+      '</form>' +
+    '</section>' +
+  '</article>';
+}
+function naWoord(id){
+  var w = vindWoord(id);
+  if(!w) return;
+  var stemvak = document.getElementById('stemvak');
+  if(stemvak){
+    stemvak.addEventListener('click', function(e){
+      var knop = e.target.closest('button[data-stem]');
+      if(!knop) return;
+      opslag.schrijf('rwp_stem_' + w.id, knop.getAttribute('data-stem'));
+      stemvak.innerHTML = stemHtml(w);
+      omroep('Uw stem is genoteerd.');
+    });
+  }
+  var form = document.getElementById('inzform');
+  if(form){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var tekst = document.getElementById('inztekst');
+      var naam = document.getElementById('inznaam');
+      var melding = document.getElementById('inzmelding');
+      if(!tekst.value.trim()){
+        melding.innerHTML = '<p class="melding">Vul eerst een herinnering in.</p>';
+        tekst.focus();
+        return;
+      }
+      var eigen = opslag.lees('rwp_inz_' + w.id, []);
+      eigen.push({naam: naam.value.trim() || 'anoniem', tekst: tekst.value.trim(), datum: datumSleutel(new Date())});
+      var bewaard = opslag.schrijf('rwp_inz_' + w.id, eigen);
+      document.getElementById('inzlijst').innerHTML = inzendingHtml(w.id);
+      form.reset();
+      melding.innerHTML = '<p class="melding">Dank u wel. Uw herinnering staat er nu bij' +
+        (bewaard ? ', bewaard in deze browser.' : '. Let op: opslag is geblokkeerd, dus hij verdwijnt bij het sluiten van de pagina.') + '</p>';
+      omroep('Herinnering toegevoegd.');
+    });
+  }
+}
+
+/* ---------- 4. dagelijks spel ----------
+   Het spel put uit het eerste boek, dat al verschenen is: elke dag
+   één fragment van Rogier met het woord eruit geknipt. Zo proeft de
+   bezoeker de toon van het boek terwijl deel twee groeit.          */
+function spelNorm(t){
+  return t.toLowerCase()
+    .replace(/[à-å]/g,'a').replace(/[è-ë]/g,'e')
+    .replace(/[ì-ï]/g,'i').replace(/[ò-ö]/g,'o').replace(/[ù-ü]/g,'u');
+}
+function maskeer(fragment, woord){
+  var k = spelNorm(woord);
+  var stam = k.length > 5 ? k.slice(0, k.length - 1) : k;
+  var patroon = new RegExp('[\\wÀ-ÿ]*' + stam.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '[\\wÀ-ÿ]*', 'gi');
+  return esc(fragment).replace(patroon, function(m){
+    return '<span class="gat" aria-label="weggelaten woord">' + m.replace(/./g,'█') + '</span>';
+  });
+}
+function paginaSpel(){
+  var vandaag = new Date();
+  var sleutel = datumSleutel(vandaag);
+  var nr = dagNummer(vandaag);
+  var f = FRAGMENTEN[nr % FRAGMENTEN.length];
+
+  var fout = husselMet(FRAGMENTEN.filter(function(o){ return o.w !== f.w; }), toeval(nr * 31337)).slice(0,3);
+  var opties = husselMet([f].concat(fout), toeval(nr * 104729));
+
+  var gespeeld = opslag.lees('rwp_spel_' + sleutel, null);
+  var reeks = opslag.lees('rwp_reeks', {reeks:0, langste:0, laatste:null});
+
+  var lijst = opties.map(function(o, i){
+    var letter = ['A','B','C','D'][i];
+    var uitslag = '';
+    if(gespeeld){
+      if(o.w === f.w) uitslag = ' data-uitslag="goed"';
+      else if(gespeeld.keuze === o.w) uitslag = ' data-uitslag="mis"';
+    }
+    return '<li><button class="keuze" type="button" data-woord="' + esc(o.w) + '"' + uitslag +
+      (gespeeld ? ' disabled' : '') + '><span class="letter" aria-hidden="true">' + letter + '</span>' +
+      '<span>' + esc(o.w) + '</span></button></li>';
+  }).join('');
+
+  return '' +
+  '<section class="vel">' +
+    '<div class="paginakop">' +
+      '<h1>Dagelijks woord</h1>' +
+      '<p class="groot">Eén fragment per dag uit het eerste boek, met het woord eruit geknipt. Welk woord stond hier? Eén poging, morgen een nieuw fragment.</p>' +
+    '</div>' +
+    '<div class="spelvak">' +
+      '<p class="speldatum">' + esc(datumTekst(vandaag)) + '</p>' +
+      '<p class="etiket">Uit deel één · tekst van Rogier Proper</p>' +
+      '<p class="fragment">' + maskeer(f.f, f.w) + '</p>' +
+      '<p class="etiket">Welk woord is hier weggehaald?</p>' +
+      '<ul class="keuzes" id="keuzes">' + lijst + '</ul>' +
+      '<div id="spelna">' + (gespeeld ? spelUitslagHtml(f, gespeeld, reeks, vandaag) : '') + '</div>' +
+      '<div class="spelscore">' +
+        '<span>huidige reeks<b id="reeksnu">' + reeks.reeks + '</b></span>' +
+        '<span>langste reeks<b id="reeksmax">' + reeks.langste + '</b></span>' +
+        '<span>vandaag<b>' + (gespeeld ? (gespeeld.goed ? 'goed' : 'mis') : 'nog niet gespeeld') + '</b></span>' +
+      '</div>' +
+      opslagWaarschuwing() +
+    '</div>' +
+  '</section>';
+}
+function deelTekst(gespeeld, reeks, datum){
+  return 'Het Retrowoordenparadijs\n' +
+    'Dagelijks woord van ' + datumTekst(datum) + ': ' + (gespeeld.goed ? 'goed geraden.' : 'misgegokt.') + '\n' +
+    'Reeks: ' + reeks.reeks + ' ' + (reeks.reeks === 1 ? 'dag' : 'dagen') + '. Langste reeks: ' + reeks.langste + '.\n' +
+    'Raad mee en houd een woord in leven.';
+}
+function spelUitslagHtml(f, gespeeld, reeks, datum){
+  var kop = gespeeld.goed
+    ? '<h2>Goed. U hield dit woord even in leven.</h2>'
+    : '<h2>Mis. Het juiste woord staat hierboven in het blauw.</h2>';
+  return kop +
+    '<p class="lood">Het woord was <strong>' + esc(f.w) + '</strong>, uit <i>Van Allegaartje tot Zeebenen</i>, het eerste boek. <a href="#/uitdeel1">Proef meer uit deel één</a>.</p>' +
+    '<div class="deelvak">' +
+      '<p class="etiket">Uw uitslag delen</p>' +
+      '<label class="verborgen" for="deeltekst">Deelbare uitslag</label>' +
+      '<textarea id="deeltekst" readonly>' + esc(deelTekst(gespeeld, reeks, datum)) + '</textarea>' +
+      '<p style="margin-top:.7rem"><button class="knop knop--geel" type="button" id="deelknop">Kopieer de uitslag</button></p>' +
+      '<div id="deelmelding" role="status"></div>' +
+    '</div>';
+}
+function naSpel(){
+  var vandaag = new Date();
+  var sleutel = datumSleutel(vandaag);
+  var nr = dagNummer(vandaag);
+  var f = FRAGMENTEN[nr % FRAGMENTEN.length];
+  var keuzes = document.getElementById('keuzes');
+
+  function bindDelen(){
+    var knop = document.getElementById('deelknop');
+    if(!knop) return;
+    knop.addEventListener('click', function(){
+      var veld = document.getElementById('deeltekst');
+      var melding = document.getElementById('deelmelding');
+      var klaar = function(gelukt){
+        melding.innerHTML = '<p class="melding stil">' + (gelukt
+          ? 'Gekopieerd. Plak het waar u wilt.'
+          : 'Kopiëren lukt hier niet. Selecteer de tekst hierboven en kopieer handmatig.') + '</p>';
+      };
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(veld.value).then(function(){ klaar(true); }, function(){ klaar(false); });
+          return;
+        }
+      }catch(e){ /* valt terug op de oude manier */ }
+      try{ veld.focus(); veld.select(); klaar(document.execCommand('copy')); }
+      catch(e2){ klaar(false); }
+    });
+  }
+  bindDelen();
+
+  if(!keuzes) return;
+  keuzes.addEventListener('click', function(e){
+    var knop = e.target.closest('button.keuze');
+    if(!knop || knop.disabled) return;
+    var gekozen = knop.getAttribute('data-woord');
+    var goed = gekozen === f.w;
+    var gespeeld = {keuze:gekozen, goed:goed};
+    opslag.schrijf('rwp_spel_' + sleutel, gespeeld);
+
+    var reeks = opslag.lees('rwp_reeks', {reeks:0, langste:0, laatste:null});
+    var gisteren = datumSleutel(new Date(Date.now() - 86400000));
+    if(goed){ reeks.reeks = (reeks.laatste === gisteren) ? reeks.reeks + 1 : 1; }
+    else { reeks.reeks = 0; }
+    reeks.laatste = sleutel;
+    if(reeks.reeks > reeks.langste) reeks.langste = reeks.reeks;
+    opslag.schrijf('rwp_reeks', reeks);
+
+    $$('button.keuze', keuzes).forEach(function(b){
+      b.disabled = true;
+      if(b.getAttribute('data-woord') === f.w) b.setAttribute('data-uitslag','goed');
+      else if(b.getAttribute('data-woord') === gekozen) b.setAttribute('data-uitslag','mis');
+    });
+    document.getElementById('spelna').innerHTML = spelUitslagHtml(f, gespeeld, reeks, vandaag);
+    document.getElementById('reeksnu').textContent = reeks.reeks;
+    document.getElementById('reeksmax').textContent = reeks.langste;
+    bindDelen();
+    omroep(goed ? 'Goed geraden.' : 'Helaas, dat was niet het juiste woord.');
+  });
+}
+
+/* ---------- 5. inleverloket ---------- */
+function loketLijst(){
+  var rij = opslag.lees('rwp_loket', []);
+  if(!rij.length) return '<p class="lood">U heeft nog niets ingeleverd.</p>';
+  return rij.map(function(i){
+    return '<div class="inzending"><p><strong>' + esc(i.woord) + '</strong>: ' + esc(i.betekenis) + '</p>' +
+      (i.waarom ? '<p>' + esc(i.waarom) + '</p>' : '') +
+      '<p class="wie">' + esc(i.naam || 'anoniem') + ' · ' + esc(i.datum) + '</p></div>';
+  }).join('');
+}
+function paginaLoket(){
+  return '' +
+  '<section class="vel">' +
+    '<div class="paginakop">' +
+      '<h1>Inleverloket</h1>' +
+      '<p class="groot">Kent u een woord dat u bijna nergens meer hoort? Lever het hier in. De mooiste inzendingen komen in deel twee terecht.</p>' +
+    '</div>' +
+    '<div class="loketrooster"><div>' +
+    opslagWaarschuwing() +
+    '<form class="formulier" id="loketform" novalidate>' +
+      '<div class="veld">' +
+        '<label class="veldnaam" for="lwoord">Het woord</label>' +
+        '<input type="text" id="lwoord" required placeholder="bijvoorbeeld: bakvis">' +
+      '</div>' +
+      '<div class="veld">' +
+        '<label class="veldnaam" for="lbetekenis">Wat betekent het?</label>' +
+        '<input type="text" id="lbetekenis" required placeholder="in één zin">' +
+      '</div>' +
+      '<div class="veld">' +
+        '<label class="veldnaam" for="lwaarom">Waarom moet dit woord blijven?</label>' +
+        '<textarea id="lwaarom" aria-describedby="lhulp"></textarea>' +
+        '<p class="hulp" id="lhulp">Optioneel. Een herinnering, een zin van uw vader, een geluid.</p>' +
+      '</div>' +
+      '<div class="veld">' +
+        '<label class="veldnaam" for="lnaam">Uw naam</label>' +
+        '<input type="text" id="lnaam" autocomplete="name" placeholder="optioneel">' +
+      '</div>' +
+      '<div><button class="knop knop--blauw" type="submit">Woord inleveren</button></div>' +
+      '<div id="lmelding" role="status"></div>' +
+    '</form>' +
+    '</div>' +
+    '<aside class="kantlijn">' +
+      '<h2>Wat u inleverde</h2>' +
+      '<p class="hulp">In deze demo blijft alles in uw eigen browser. Er wordt niets verstuurd.</p>' +
+      '<div id="loketlijst">' + loketLijst() + '</div>' +
+      '<dl>' +
+        '<dt>Wat er daarna gebeurt</dt><dd>Rogier leest mee. Woorden die het halen krijgen een tekst, een tekening en een stem.</dd>' +
+        '<dt>Wat een goed woord is</dt><dd>Een woord dat u nog kent en bijna nooit meer hoort. Streektaal mag.</dd>' +
+      '</dl>' +
+    '</aside></div>' +
+  '</section>';
+}
+function naLoket(){
+  var form = document.getElementById('loketform');
+  if(!form) return;
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var woord = document.getElementById('lwoord');
+    var bet = document.getElementById('lbetekenis');
+    var melding = document.getElementById('lmelding');
+    if(!woord.value.trim() || !bet.value.trim()){
+      melding.innerHTML = '<p class="melding">Vul in elk geval het woord en de betekenis in.</p>';
+      (woord.value.trim() ? bet : woord).focus();
+      return;
+    }
+    var rij = opslag.lees('rwp_loket', []);
+    rij.unshift({
+      woord: woord.value.trim(),
+      betekenis: bet.value.trim(),
+      waarom: document.getElementById('lwaarom').value.trim(),
+      naam: document.getElementById('lnaam').value.trim(),
+      datum: datumTekst(new Date())
+    });
+    var bewaard = opslag.schrijf('rwp_loket', rij);
+    document.getElementById('loketlijst').innerHTML = loketLijst();
+    form.reset();
+    melding.innerHTML = '<p class="melding">Ingeleverd, dank u wel' +
+      (bewaard ? '.' : '. Let op: opslag is geblokkeerd, dus dit verdwijnt bij het sluiten van de pagina.') + '</p>';
+    omroep('Woord ingeleverd.');
+  });
+}
+
+/* ---------- 6. uit deel 1: een proeverij van het verschenen boek ---------- */
+function paginaProef(){
+  return '' +
+  '<section class="vel kerkhof">' +
+    '<div class="paginakop">' +
+      '<h1>' + slijt('Uit deel 1', 0.22, 'slijt--fijn') + '</h1>' +
+      '<p>In 2024 verscheen het eerste boek bij uitgeverij Balans: honderden verdwijnende en verdwenen woorden. Een kleine proeverij, met Rogiers tekst zoals die in het boek staat.</p>' +
+    '</div>' +
+    '<ul class="zerken">' + PROEVERIJ.map(function(k){
+      return '<li class="zerk zerk--vol"><h3>' + slijt(k.woord, k.slijtage, 'slijt--grof') + '</h3>' +
+        k.tekst.map(function(p){ return '<p>' + esc(p) + '</p>'; }).join('') +
+        '<p class="jaar">Uit Van Allegaartje tot Zeebenen · Balans, 2024</p></li>';
+    }).join('') + '</ul>' +
+  '</section>';
+}
+
+/* ---------- 7. over: de pitch ---------- */
+function paginaOver(){
+  return '' +
+  '<section class="vel over">' +
+    '<div class="paginakop">' +
+      '<h1>Over dit project</h1>' +
+    '</div>' +
+    '<div class="overrooster"><div>' +
+    '<p class="groot">In 2024 verscheen <i>Van Allegaartje tot Zeebenen</i> van Rogier Proper (uitgeverij Balans): een niet zo gebruikelijk woordenboek van honderden verdwijnende en verdwenen woorden. Er komt een tweede deel, en dit platform hoort daarbij.</p>' +
+    '<p>Bij een selectie van de nieuwe woorden komt een film van ongeveer een minuut: een illustratie in beweging, met Rogiers stem die zijn tekst voorleest. De tekeningen beelden het woord niet uit, ze beelden het verdwijnen uit. Een maan die achter de zon wegschuift. Een klontje suiker dat oplost. Bij andere woorden een foto die op zichzelf al een verdwijning toont.</p>' +
+    '<p>Het platform doet er twee dingen bij die een boek niet kan. Het vraagt de lezer of hij het woord kende, en het laat hem er zelf iets bij zetten: een herinnering, een zin van thuis, een woord dat nog niemand had ingeleverd. Zo groeit deel twee deels uit zijn eigen lezers, en blijft het boek leven na verschijning.</p>' +
+    '<div class="slot">' +
+      '<p><strong>Dit is een demo.</strong> Twee woorden hebben al een echte tekst van Rogier (kwispedoor en schuinsmarcheerder); de andere woordpagina&#39;s tonen duidelijk gemarkeerde plaatshouders. Het dagelijkse spel en de pagina Uit deel 1 putten uit het verschenen eerste boek. De slijtage die de letters aanvreet is vormgeving, geen meting. Alles wat u invult blijft in uw eigen browser en wordt nergens naartoe gestuurd.</p>' +
+    '</div>' +
+    '</div>' +
+    '<aside class="kantlijn">' +
+      '<h2>Colofon</h2>' +
+      '<dl>' +
+        '<dt>Teksten en stem</dt><dd>Rogier Proper</dd>' +
+        '<dt>Deel één</dt><dd>Van Allegaartje tot Zeebenen, uitgeverij Balans, 2024</dd>' +
+        '<dt>Deel twee</dt><dd>In de maak; dit platform hoort erbij</dd>' +
+        '<dt>In deze demo</dt><dd>' + WOORDEN.length + ' kandidaat-woorden, een dagelijks spel en een proeverij uit deel één</dd>' +
+        '<dt>Status</dt><dd>Demo, augustus 2026. Vormgeving en werking staan, de inhoud groeit.</dd>' +
+      '</dl>' +
+    '</aside></div>' +
+  '</section>';
+}
+
+function paginaKwijt(){
+  return '<section class="vel"><div class="paginakop"><h1>Dat woord staat er niet</h1>' +
+    '<p class="groot">Misschien is het al verder weg dan we dachten. <a href="#/woordenbank">Terug naar de woordenbank</a>.</p></div></section>';
+}
+
+/* =========================================================
+   4. ROUTER (hash, werkt vanaf schijf)
+   ========================================================= */
+function toon(){
+  var pad = (window.location.hash || '#/').replace(/^#/, '');
+  var delen = pad.split('/').filter(function(d){ return d.length; });
+  var html, titel, na = null;
+
+  if(delen.length === 0){ html = paginaVoor(); titel = 'Het Retrowoordenparadijs'; na = naVoor; }
+  else if(delen[0] === 'woordenbank'){ html = paginaBank(); titel = 'Woordenbank'; na = naBank; }
+  else if(delen[0] === 'woord' && delen[1]){
+    var id = decodeURIComponent(delen[1]);
+    var w = vindWoord(id);
+    html = paginaWoord(id);
+    titel = w ? w.woord : 'Woord niet gevonden';
+    na = function(){ naWoord(id); };
+  }
+  else if(delen[0] === 'spel'){ html = paginaSpel(); titel = 'Dagelijks woord'; na = naSpel; }
+  else if(delen[0] === 'inleverloket'){ html = paginaLoket(); titel = 'Inleverloket'; na = naLoket; }
+  else if(delen[0] === 'uitdeel1'){ html = paginaProef(); titel = 'Uit deel 1'; }
+  else if(delen[0] === 'over'){ html = paginaOver(); titel = 'Over dit project'; }
+  else { html = paginaKwijt(); titel = 'Niet gevonden'; }
+
+  hoofd.innerHTML = html;
+  document.title = titel + ' · Het Retrowoordenparadijs';
+
+  var hoofdpad = '#/' + (delen[0] || '');
+  $$('#nav a').forEach(function(a){
+    var eigen = a.getAttribute('href');
+    if(eigen === hoofdpad || (eigen === '#/woordenbank' && delen[0] === 'woord')) a.setAttribute('aria-current','page');
+    else a.removeAttribute('aria-current');
+  });
+
+  if(na) na();
+
+  if(!eersteKeer){
+    window.scrollTo(0,0);
+    hoofd.focus();
+    omroep(titel);
+  }
+  eersteKeer = false;
+}
+
+window.addEventListener('hashchange', toon);
+toon();
+
+})();
+</script>
+</div>
+</body>
+</html>
