@@ -1,209 +1,259 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>'tivity · A new studio model</title>
-<meta name="description" content="tivity B.V., studio in Amsterdam. Maker van Mona Offline. KvK 84898569.">
+<title>'tivity · campaign starter</title>
+<meta name="description" content="tivity B.V., campaign starter in Amsterdam. Senior strategic direction before production. KvK 84898569.">
 <link rel="icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; }
-  html, body { margin: 0; min-height: 100%; }
-  body {
-    font-family: 'Quicksand', sans-serif;
-    background: #F4F2ED;
-    color: #17150F;
-    overflow-x: hidden;
+  :root{
+    --paper:#FAFAF8; --ink:#17150F; --mute:#6E6A62; --rule:#DED9D0; --accent:#7A3B1E;
+    --dia-line:#1A1A1A; --dia-quiet:#C9C5BC; --dia-text:#1A1A1A;
+    --dia-bar:#1A1A1A; --dia-barq:#DCD8D0; --dia-cap:#8A857C;
+    --dia-accent:#7A3B1E; --dia-accent-text:#FAFAF8;
   }
-  /* zonlicht dat langzaam over een galeriemuur schuift */
-  .sun {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background: linear-gradient(115deg, transparent 32%, rgba(120,116,108,0.06) 46%, rgba(140,136,128,0.10) 52%, rgba(120,116,108,0.05) 58%, transparent 72%);
-    animation: sweep 30s ease-in-out infinite alternate;
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:'Jost',system-ui,-apple-system,'Segoe UI',sans-serif;
+    font-weight:300; line-height:1.65; -webkit-font-smoothing:antialiased;
   }
-  @keyframes sweep { 0% { transform: translateX(-16%); } 100% { transform: translateX(16%); } }
+  .wrap{max-width:780px; margin:0 auto; padding:0 28px}
 
-  .wrap { position: relative; z-index: 1; min-height: 88vh; display: flex; flex-direction: column; }
-  .top { display: flex; justify-content: space-between; align-items: center; padding: 38px 48px; }
-  .top img { height: 34px; }
-  .loc { font-size: 11px; letter-spacing: 0.22em; color: rgba(23,21,15,0.4); }
+  .top{display:flex; justify-content:space-between; align-items:center; padding:30px 0 0}
+  .top img{height:30px; width:auto; display:block}
+  .top span{font-size:11px; letter-spacing:.2em; color:var(--mute); text-transform:uppercase}
 
-  .main {
-    flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-    text-align: center; padding: 20px 28px 10px;
-  }
-  h1 {
-    margin: 0 0 34px; font-weight: 500;
-    font-size: clamp(26px, 3.7vw, 48px); line-height: 1.34; letter-spacing: -0.01em;
-    max-width: 20ch;
-    animation: rise 1.3s cubic-bezier(.16,.84,.28,1) both;
-  }
-  h1 em { font-style: normal; color: inherit; }
-  @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+  .plate{padding:70px 0 0}
+  .plate .name{font-size:13px; letter-spacing:.22em; text-transform:uppercase; font-weight:500}
+  .plate .rule{font-size:15px; color:var(--mute); margin-top:6px}
+  h1{font-weight:400; font-size:clamp(30px,4.6vw,46px); line-height:1.22;
+     letter-spacing:-.015em; margin:26px 0 0; max-width:15ch}
+  .lead{font-size:18px; color:var(--mute); margin:20px 0 0; max-width:46ch}
 
-  .formula {
-    display: flex; align-items: flex-end; justify-content: center;
-    width: min(460px, 78vw);
-    margin: 6px 0 40px;
-  }
-  .formula img {
-    height: auto; display: block;
-    opacity: 0;
-    transform: translateY(14px) scale(0.96);
-    animation: pop 0.7s cubic-bezier(.2,1.3,.35,1) forwards;
-  }
-  /* elk deel behoudt zijn aandeel in de totale breedte (678 : 260 : 588 van 1526) */
-  .formula .p1 { width: 44.4%; animation-delay: 0.9s; }
-  .formula .p2 { width: 17.0%; animation-delay: 1.4s; }
-  .formula .p3 { width: 38.6%; animation-delay: 1.75s; }
-  @keyframes pop {
-    0%   { opacity: 0; transform: translateY(14px) scale(0.96); }
-    60%  { opacity: 1; transform: translateY(-3px) scale(1.02); }
-    100% { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .formula img, h1, .sub, .cta, .mail, .scroll-hint { animation: none !important; opacity: 1 !important; transform: none !important; }
-    .sun { animation: none; }
-  }
-  .sub {
-    margin: 0 0 54px; font-size: 15px; font-weight: 400; line-height: 1.95;
-    color: rgba(23,21,15,0.55); max-width: 400px;
-    animation: rise 1.3s cubic-bezier(.16,.84,.28,1) 0.35s both;
-  }
-  .cta {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: #17150F; color: #F4F2ED; text-decoration: none;
-    font-size: 15px; font-weight: 500; padding: 15px 32px; border-radius: 999px;
-    transition: background .25s, transform .25s;
-    animation: rise 1.3s cubic-bezier(.16,.84,.28,1) 0.55s both;
-  }
-  .cta:hover { background: #3A362E; transform: translateY(-1px); }
-  .mail { display: block; margin-top: 20px; font-size: 13px; color: rgba(23,21,15,0.4); animation: rise 1.3s ease-out 0.7s both; }
-  .foot { text-align: center; padding: 0 20px 56px; font-size: 12px; color: rgba(23,21,15,0.35); }
+  section{border-top:1px solid var(--rule); margin-top:64px; padding-top:22px}
+  .sec-h{display:flex; gap:18px; align-items:baseline; margin-bottom:26px}
+  .sec-n{font-size:11px; letter-spacing:.18em; color:var(--mute); font-weight:500; flex:none}
+  .sec-t{font-size:11px; letter-spacing:.18em; text-transform:uppercase; font-weight:500}
 
-  /* subtiele scroll-hint onderaan de hero */
-  .scroll-hint {
-    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-    font-size: 11px; letter-spacing: 0.18em; color: rgba(23,21,15,0.3);
-    text-decoration: none; text-align: center;
-    animation: rise 1.3s ease-out 1s both;
-  }
-  .scroll-hint span { display: block; font-size: 15px; margin-top: 6px; animation: nudge 2.4s ease-in-out infinite; }
-  @keyframes nudge { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+  .moments p{margin:0 0 16px; font-size:19px; font-weight:300; max-width:48ch}
+  .moments p b{font-weight:500}
 
-  /* zakelijke sectie onder de hero */
-  .info {
-    position: relative; z-index: 1;
-    border-top: 1px solid rgba(23,21,15,0.08);
-    padding: 50px 28px 80px;
-    display: flex; flex-direction: column; align-items: center;
+  .diaband{
+    background:var(--ink); color:var(--paper); margin-top:64px; padding:70px 28px 76px;
+    --dia-line:#FAFAF8; --dia-quiet:#4A463E; --dia-text:#FAFAF8;
+    --dia-bar:#FAFAF8; --dia-barq:#3C3830; --dia-cap:#9A948A;
+    --dia-accent:#D68F55; --dia-accent-text:#17150F;
   }
-  .info-inner { width: 100%; max-width: 900px; }
-  .info-label {
-    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-    color: rgba(23,21,15,0.4); margin: 0 0 28px;
-  }
-  .product-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-    margin-bottom: 64px;
-  }
-  .product {
-    display: flex; flex-direction: column;
-    text-decoration: none; color: inherit;
-    border: 1px solid rgba(23,21,15,0.12); border-radius: 14px;
-    padding: 28px 30px;
-    transition: border-color .25s, transform .25s, background .25s;
-    background: rgba(255,255,255,0.35);
-  }
-  .product:hover { border-color: rgba(23,21,15,0.3); transform: translateY(-2px); background: rgba(255,255,255,0.6); }
-  /* statische kaart (geen doorklik): geen hover-lift, wel subtiele randreactie via de mail-link */
-  .product-static { cursor: default; }
-  .product-static:hover { transform: none; border-color: rgba(23,21,15,0.12); background: rgba(255,255,255,0.35); }
-  .product h3 { margin: 0 0 8px; font-size: 22px; font-weight: 500; }
-  .product p { margin: 0 0 18px; font-size: 15px; line-height: 1.7; color: rgba(23,21,15,0.6); }
-  /* link/mail niet meer helemaal onderaan; logo wordt de voet */
-  .product .visit, .product .visit-mail { align-self: flex-start; }
-  .product .visit { font-size: 14px; font-weight: 500; color: #17150F; }
-  .product .visit::after { content: " →"; }
-  .product .visit-mail {
-    font-size: 14px; font-weight: 500; color: #17150F; text-decoration: none;
-    border-bottom: 1px solid rgba(23,21,15,0.25); padding-bottom: 1px;
-    transition: border-color .2s;
-  }
-  .product .visit-mail:hover { border-color: rgba(23,21,15,0.6); }
-  /* app-kader onderin de kaart, gecentreerd */
-  .logo-frame {
-    margin: 26px auto 0; margin-top: auto;
-    width: 88px; height: 88px;
-    border: 1px solid rgba(23,21,15,0.5);
-    border-radius: 20px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; overflow: hidden;
-  }
-  /* MONA: kleurenicoon vult het hele kader */
-  .logo-frame-fill { border: none; padding: 0; }
-  .logo-frame-fill img { width: 100%; height: 100%; object-fit: cover; opacity: 1; display: block; }
-  /* SimplifAI: diapositief, zwart kader met witte letters */
-  .logo-frame-dark { background: #17150F; border-color: #17150F; }
-  .logo-frame-dark .logo-simplifai { width: 60px; height: auto; opacity: 1; }
-  .logo-frame img { display: block; opacity: 0.9; }
-  @media (max-width: 640px) {
-    .product-grid { grid-template-columns: 1fr; }
-  }
+  .diaband .cap{font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+                font-weight:500; color:#9A948A; text-align:center; margin:0 0 42px}
+  .dia{max-width:400px; margin:0 auto}
+  .dia svg{width:100%; height:auto; display:block}
 
-  .company {
-    font-size: 13px; line-height: 1.9; color: rgba(23,21,15,0.55);
+  .items{margin:0; padding:0; list-style:none}
+  .items li{padding:18px 0; border-bottom:1px solid var(--rule); max-width:58ch}
+  .items li:first-child{padding-top:0}
+  .items li:last-child{border-bottom:none}
+  .items b{display:block; font-weight:500; font-size:17px; margin-bottom:3px}
+  .items span{color:var(--mute); font-size:16px}
+
+  .proof{margin:0; padding:0; list-style:none}
+  .proof li{padding:20px 0; border-bottom:1px solid var(--rule); max-width:58ch}
+  .proof li:last-child{border-bottom:none}
+  .proof b{display:block; font-weight:500; font-size:17px; margin-bottom:4px}
+  .proof span{color:var(--mute); font-size:16px}
+  .proof .wide{padding:30px 0}
+  .proof .wide b{font-size:21px; color:var(--accent); margin-bottom:8px}
+  .proof .wide span{font-size:17px}
+
+  .price{margin:0; padding:0; list-style:none}
+  .price li{display:flex; justify-content:space-between; gap:20px; padding:13px 0;
+            border-bottom:1px solid var(--rule); font-size:17px}
+  .price li:last-child{border-bottom:none}
+  .price em{font-style:normal; color:var(--mute)}
+  .price-note{font-size:14px; color:var(--mute); margin-top:16px; max-width:52ch}
+
+  .boundary{border-top:1px solid var(--rule); margin-top:64px; padding:76px 0 70px}
+  .boundary p{font-size:clamp(22px,3.2vw,32px); font-weight:400; line-height:1.38;
+              letter-spacing:-.01em; margin:0; max-width:22ch}
+
+  .cta-wrap{border-top:1px solid var(--rule); padding:44px 0 0;
+            display:flex; align-items:center; gap:22px; flex-wrap:wrap}
+  .cta{display:inline-flex; align-items:center; gap:10px; background:var(--ink); color:var(--paper);
+       font-size:16px; padding:14px 30px; border-radius:999px; text-decoration:none; transition:background .2s}
+  .cta:hover{background:var(--accent)}
+  .mail{font-size:15px; color:var(--mute)}
+
+  footer{border-top:1px solid var(--rule); margin-top:56px; padding:22px 0 46px;
+         font-size:13px; color:var(--mute)}
+  footer b{font-weight:500; color:var(--ink)}
+  footer a{color:inherit}
+
+  @media (max-width:560px){
+    .wrap{padding:0 20px}
+    .plate{padding-top:48px}
+    section{margin-top:48px}
+    .diaband{margin-top:48px; padding:52px 20px 56px}
+    .boundary{padding:56px 0 50px}
   }
-  .company strong { font-weight: 600; color: rgba(23,21,15,0.75); }
-  .company .legal { margin-top: 14px; font-size: 12px; color: rgba(23,21,15,0.4); }
-  @media (max-width: 640px) { .top { padding: 26px 26px; } .wrap { min-height: 80vh; } .info { padding-top: 34px; } }
 </style>
 </head>
 <body>
-<div class="sun"></div>
+
 <div class="wrap">
   <div class="top">
     <img src="tivity-logo.png" alt="'tivity">
-    <span class="loc">keizersgracht 720</span>
+    <span>Amsterdam</span>
   </div>
-  <div class="main">
-    <h1>big studio output<br>no studio <em>overhead</em></h1>
-    <div>
-      <a href="mailto:hello@tivity.nl" class="cta">let's talk&nbsp; →</a>
-      <span class="mail">hello@tivity.nl</span>
-    </div>
+
+  <div class="plate">
+    <div class="name">'tivity · campaign starter</div>
+    <div class="rule">Direction before production.</div>
+    <h1>Big-agency thinking. Freelance tempo. Fixed price.</h1>
+    <p class="lead">The direction, and the reasoning under it. Before a euro goes to production.</p>
   </div>
-  <a class="scroll-hint" href="#info">meer<span>↓</span></a>
+
+  <section class="moments">
+    <div class="sec-h"><span class="sec-n">01</span><span class="sec-t">Two moments</span></div>
+    <p><b>About to pitch for a new agency?</b> Know what you're asking for first.</p>
+    <p><b>Running an in-house team?</b> Get the view from outside, without hiring it.</p>
+  </section>
 </div>
 
-<section class="info" id="info">
-  <div class="info-inner">
-    <p class="info-label">producten</p>
-    <div class="product-grid">
-    <a class="product" href="https://monaoffline.com">
-      <h3>Mona Offline</h3>
-      <p>Een Android-app die je helpt om bewust offline te gaan. Je belt in voor een sessie, kiest zelf welke apps bereikbaar blijven, en de rest gaat even op slot. De frictie is het punt: even niet alles binnen handbereik.</p>
-      <span class="visit">monaoffline.com</span>
-      <div class="logo-frame logo-frame-fill"><img src="logo-mona-kleur.png" alt="MONA"></div>
-    </a>
-    <div class="product product-static">
-      <h3>SimplifAI</h3>
-      <p>Een strategische pijplijn die een echte briefing door een gesimuleerd bureauproces haalt en één onderbouwde richting oplevert. Inclusief de routes die het afwees, en waarom. Het maken is goedkoop geworden; de winst zit in het kiezen.</p>
-      <a class="visit-mail" href="mailto:hello@tivity.nl?subject=SimplifAI">hello@tivity.nl</a>
-      <div class="logo-frame logo-frame-dark"><img class="logo-simplifai" src="logo-simplifai-wit.png" alt="SimplifAI"></div>
-    </div>
-    </div>
-    <div class="company">
-      <strong>tivity B.V.</strong><br>
-      Keizersgracht 720 HV<br>
-      1017 EW Amsterdam, Nederland<br>
-      <a href="mailto:hello@tivity.nl" style="color:inherit;">hello@tivity.nl</a>
-      <div class="legal">KvK 84898569</div>
-    </div>
+<div class="diaband">
+  <p class="cap">How it runs</p>
+  <div class="dia">
+    <svg viewBox="0 0 400 690" xmlns="http://www.w3.org/2000/svg" role="img"
+      aria-label="intake, research, campaign territories, we select and advise, you choose one, strategy, media direction, creative debrief">
+
+      <rect x="110" y="16" width="180" height="48" rx="3" fill="none" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <text x="200" y="46" text-anchor="middle" font-size="16" fill="var(--dia-text)" font-family="Jost,sans-serif" font-weight="400">intake</text>
+      <line x1="200" y1="64" x2="200" y2="88" stroke="var(--dia-line)" stroke-width="2.5"/>
+
+      <rect x="110" y="88" width="180" height="48" rx="3" fill="none" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <text x="200" y="118" text-anchor="middle" font-size="16" fill="var(--dia-text)" font-family="Jost,sans-serif" font-weight="400">research</text>
+      <text x="200" y="157" text-anchor="middle" font-size="11.5" fill="var(--dia-cap)" letter-spacing="2.4" font-family="Jost,sans-serif" font-weight="500">CAMPAIGN TERRITORIES</text>
+      <line x1="200" y1="166" x2="200" y2="180" stroke="var(--dia-line)" stroke-width="2.5"/>
+
+      <line x1="50" y1="180" x2="350" y2="180" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <line x1="50"  y1="180" x2="50"  y2="196" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <line x1="100" y1="180" x2="100" y2="196" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <line x1="150" y1="180" x2="150" y2="196" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <line x1="200" y1="180" x2="200" y2="196" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <line x1="250" y1="180" x2="250" y2="196" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <line x1="300" y1="180" x2="300" y2="196" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <line x1="350" y1="180" x2="350" y2="196" stroke="var(--dia-line)" stroke-width="2.5"/>
+
+      <rect x="30" y="196" width="40" height="84" rx="2.5" fill="none" stroke="var(--dia-quiet)" stroke-width="2.5"/>
+      <rect x="38" y="214" width="24" height="6" fill="var(--dia-barq)"/>
+      <rect x="38" y="230" width="16" height="6" fill="var(--dia-barq)"/>
+      <rect x="130" y="196" width="40" height="84" rx="2.5" fill="none" stroke="var(--dia-quiet)" stroke-width="2.5"/>
+      <rect x="138" y="214" width="20" height="6" fill="var(--dia-barq)"/>
+      <rect x="138" y="230" width="24" height="6" fill="var(--dia-barq)"/>
+      <rect x="280" y="196" width="40" height="84" rx="2.5" fill="none" stroke="var(--dia-quiet)" stroke-width="2.5"/>
+      <rect x="288" y="214" width="22" height="6" fill="var(--dia-barq)"/>
+      <rect x="288" y="230" width="14" height="6" fill="var(--dia-barq)"/>
+      <rect x="330" y="196" width="40" height="84" rx="2.5" fill="none" stroke="var(--dia-quiet)" stroke-width="2.5"/>
+      <rect x="338" y="214" width="18" height="6" fill="var(--dia-barq)"/>
+      <rect x="338" y="230" width="24" height="6" fill="var(--dia-barq)"/>
+
+      <rect x="80" y="196" width="40" height="84" rx="2.5" fill="none" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <rect x="88" y="214" width="24" height="6" fill="var(--dia-bar)"/>
+      <rect x="88" y="230" width="18" height="6" fill="var(--dia-bar)"/>
+      <rect x="88" y="246" width="22" height="6" fill="var(--dia-bar)"/>
+      <rect x="180" y="196" width="40" height="84" rx="2.5" fill="none" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <rect x="188" y="214" width="22" height="6" fill="var(--dia-bar)"/>
+      <rect x="188" y="230" width="24" height="6" fill="var(--dia-bar)"/>
+      <rect x="188" y="246" width="16" height="6" fill="var(--dia-bar)"/>
+      <rect x="230" y="196" width="40" height="84" rx="2.5" fill="none" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <rect x="238" y="214" width="18" height="6" fill="var(--dia-bar)"/>
+      <rect x="238" y="230" width="24" height="6" fill="var(--dia-bar)"/>
+
+      <rect x="86" y="298" width="228" height="42" rx="3" fill="none" stroke="var(--dia-accent)" stroke-width="2.5"/>
+      <text x="200" y="324" text-anchor="middle" font-size="12.5" fill="var(--dia-accent)" letter-spacing="2" font-family="Jost,sans-serif" font-weight="500">WE SELECT AND ADVISE</text>
+      <line x1="200" y1="340" x2="200" y2="364" stroke="var(--dia-line)" stroke-width="2.5"/>
+
+      <path fill="none" stroke="var(--dia-accent)" stroke-width="3.2" stroke-linecap="round"
+        d="M 200 187 C 217 187, 226 210, 226 239 C 226 269, 216 289, 200 290
+           C 184 291, 174 269, 174 239 C 174 211, 183 188, 201 188
+           C 212 188, 220 193, 224 203"/>
+
+      <rect x="66" y="364" width="268" height="60" rx="3" fill="var(--dia-accent)"/>
+      <text x="200" y="402" text-anchor="middle" font-size="18" fill="var(--dia-accent-text)" letter-spacing="2.6" font-family="Jost,sans-serif" font-weight="500">YOU CHOOSE ONE</text>
+      <line x1="200" y1="424" x2="200" y2="450" stroke="var(--dia-line)" stroke-width="2.5"/>
+
+      <rect x="110" y="450" width="180" height="48" rx="3" fill="none" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <text x="200" y="480" text-anchor="middle" font-size="16" fill="var(--dia-text)" font-family="Jost,sans-serif" font-weight="400">strategy</text>
+      <line x1="200" y1="498" x2="200" y2="522" stroke="var(--dia-line)" stroke-width="2.5"/>
+
+      <rect x="110" y="522" width="180" height="48" rx="3" fill="none" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <text x="200" y="552" text-anchor="middle" font-size="16" fill="var(--dia-text)" font-family="Jost,sans-serif" font-weight="400">media direction</text>
+      <line x1="200" y1="570" x2="200" y2="594" stroke="var(--dia-line)" stroke-width="2.5"/>
+
+      <rect x="110" y="594" width="180" height="48" rx="3" fill="none" stroke="var(--dia-line)" stroke-width="2.5"/>
+      <text x="200" y="624" text-anchor="middle" font-size="16" fill="var(--dia-text)" font-family="Jost,sans-serif" font-weight="400">creative debrief</text>
+    </svg>
   </div>
-</section>
+</div>
+
+<div class="wrap">
+
+  <section>
+    <div class="sec-h"><span class="sec-n">02</span><span class="sec-t">What you get</span></div>
+    <ul class="items">
+      <li><b>Campaign territories</b><span>Each one carries its logic and a glimpse: the contours of the work, often a first line to live by.</span></li>
+      <li><b>A strategy, built back from your choice</b><span>Positioning and proposition, reverse engineered from the territory you picked and written out.</span></li>
+      <li><b>A media direction</b><span>Idea and medium feeding each other, instead of one waiting for the other.</span></li>
+      <li><b>A creative debrief</b><span>The document creative works from, and the one you sign off on before anyone starts.</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="sec-n">03</span><span class="sec-t">Why you believe it</span></div>
+    <ul class="proof">
+      <li class="wide">
+        <b>You don't see everything.</b>
+        <span>We put forward the territories worth your time, with a preference on the table and the reasoning to defend it.</span>
+      </li>
+      <li><b>Thirty years in the method.</b><span>DDB, TBWA, HAVAS, Lowe, BBDO. The questions it asks are the questions a creative director asks after thirty years.</span></li>
+      <li><b>A person chooses. Twice.</b><span>We narrow it down and say which one we would back. You pick the one that goes forward.</span></li>
+      <li><b>Four to ten weeks, start to finish.</b><span>Intake to approved debrief, including your rounds of feedback.</span></li>
+      <li><b>Fixed price, known upfront.</b><span>You know the number before the work starts. Scope moves, the price does not.</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="sec-n">04</span><span class="sec-t">Fixed price</span></div>
+    <ul class="price">
+      <li><span>Direction</span><em>from &euro;3,500</em></li>
+      <li><span>Campaign</span><em>from &euro;9,500</em></li>
+      <li><span>Launch</span><em>from &euro;20,000</em></li>
+      <li><span>In-house, monthly</span><em>from &euro;2,500</em></li>
+    </ul>
+    <p class="price-note">What lands in each depends on the media plan. No discounting. If the budget is smaller, the scope gets smaller.</p>
+  </section>
+
+  <div class="boundary">
+    <p>We deliver the direction and the reasoning under it. What you make with it is yours.</p>
+  </div>
+
+  <div class="cta-wrap">
+    <a href="mailto:hello@tivity.nl" class="cta">Let's talk&nbsp; &rarr;</a>
+    <span class="mail">hello@tivity.nl</span>
+  </div>
+
+  <footer>
+    <b>tivity B.V.</b><br>
+    Keizersgracht 720 HV, 1017 EW Amsterdam<br>
+    KvK 84898569 &middot; also makers of <a href="https://monaoffline.com">Mona Offline</a>
+  </footer>
+
+</div>
+
 </body>
 </html>
